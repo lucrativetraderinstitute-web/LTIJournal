@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LTI Trading Journal Lucrative Trader Institute</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════ DESIGN TOKENS ═══════════════════════════ */
+:root {
+  --bg:        #0A192F;
+  --card:      #112240;
+  --card2:     #0d1b35;
+  --blue:      #0077B6;
+  --blue-dim:  #0077B622;
+  --blue-mid:  #0077B655;
+  --blue-lit:  #00a8e8;
+  --white:     #FFFFFF;
+  --red:       #EF476F;
+  --red-dim:   #EF476F22;
+  --border:    #1a2f50;
+  --border2:   #223558;
+  --muted:     #4a6fa5;
+  --muted2:    #6b8cba;
+  --mono:      'JetBrains Mono', monospace;
+  --head:      'Montserrat', sans-serif;
+  --body:      'Space Grotesk', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--body);overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--card);}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:2px;}
+
+/* ═══════════════════════════ SPLASH / COVER ═══════════════════════════ */
+#splash {
+  position:fixed;inset:0;z-index:999;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;
+}
+.splash-grid-bg {
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,119,182,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,119,182,0.06) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.splash-glow {
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,119,182,0.18) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none;
+}
+.splash-content {
+  position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:32px;
+  animation:splashIn 1s ease both;
+}
+@keyframes splashIn{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.splash-logo-wrap {
+  width:180px;height:180px;border-radius:24px;overflow:hidden;
+  border:2px solid var(--blue);
+  box-shadow:0 0 60px rgba(0,119,182,0.5),0 0 120px rgba(0,119,182,0.2);
+  background:#060f1e;
+  display:flex;align-items:center;justify-content:center;
+}
+.splash-logo-wrap img{width:100%;height:100%;object-fit:cover;}
+.splash-brand {
+  text-align:center;
+}
+.splash-inst {
+  font-family:var(--head);
+  font-size:11px;font-weight:700;letter-spacing:0.32em;
+  color:var(--blue);text-transform:uppercase;margin-bottom:10px;
+}
+.splash-title {
+  font-family:var(--head);
+  font-size:clamp(28px,5vw,52px);
+  font-weight:900;
+  line-height:1.05;
+  letter-spacing:-0.01em;
+  color:var(--white);
+  text-shadow:0 0 40px rgba(0,119,182,0.4);
+}
+.splash-title span{color:var(--blue);}
+.splash-subtitle {
+  font-family:var(--body);
+  font-size:14px;color:var(--muted2);
+  letter-spacing:0.08em;margin-top:10px;
+}
+.splash-rule{
+  width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent);
+  margin:4px auto;
+}
+.splash-enter {
+  font-family:var(--head);font-size:13px;font-weight:700;letter-spacing:0.12em;
+  background:var(--blue);color:var(--white);border:none;cursor:pointer;
+  padding:16px 48px;border-radius:4px;
+  text-transform:uppercase;
+  box-shadow:0 4px 32px rgba(0,119,182,0.5);
+  transition:all 0.2s;
+  margin-top:8px;
+}
+.splash-enter:hover{background:var(--blue-lit);transform:translateY(-2px);box-shadow:0 8px 40px rgba(0,119,182,0.7);}
+.splash-tagline {
+  font-size:12px;color:var(--muted);letter-spacing:0.06em;text-align:center;max-width:420px;line-height:1.7;
+}
+.splash-version{font-size:10px;color:var(--muted);letter-spacing:0.15em;margin-top:24px;}
+
+/* ═══════════════════════════ APP SHELL ═══════════════════════════ */
+#app{display:none;}
+#nav {
+  position:fixed;top:0;left:0;right:0;z-index:100;height:64px;
+  background:rgba(10,25,47,0.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:0;
+}
+.nav-brand{display:flex;align-items:center;gap:14px;margin-right:28px;flex-shrink:0;}
+.nav-logo{width:40px;height:40px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);background:#060f1e;}
+.nav-logo img{width:100%;height:100%;object-fit:cover;}
+.nav-brand-text{}
+.nav-title{font-family:var(--head);font-weight:800;font-size:13px;letter-spacing:0.08em;color:var(--white);}
+.nav-sub{font-size:9px;font-weight:700;letter-spacing:0.2em;color:var(--muted2);text-transform:uppercase;}
+.nav-tabs{display:flex;gap:2px;flex:1;}
+.nav-tab{
+  background:none;border:none;cursor:pointer;
+  font-family:var(--body);font-size:12px;font-weight:600;letter-spacing:0.04em;
+  color:var(--muted2);padding:8px 14px;border-radius:4px;transition:all 0.15s;
+  white-space:nowrap;
+}
+.nav-tab:hover{color:var(--white);background:var(--blue-dim);}
+.nav-tab.active{color:var(--white);background:var(--blue);box-shadow:0 2px 12px rgba(0,119,182,0.4);}
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto;}
+.nav-badge{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:4px 10px;border-radius:3px;}
+
+/* ═══════════════════════════ MAIN ═══════════════════════════ */
+main{padding:80px 24px 40px;max-width:1400px;margin:0 auto;}
+.section{display:none;}
+.section.active{display:block;animation:fadeUp 0.2s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ═══════════════════════════ LAYOUT PRIMITIVES ═══════════════════════════ */
+.page-header{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.page-eyebrow{font-size:10px;font-weight:700;letter-spacing:0.22em;color:var(--blue);text-transform:uppercase;margin-bottom:5px;}
+.page-title{font-family:var(--head);font-weight:800;font-size:26px;line-height:1.1;color:var(--white);}
+.page-title span{color:var(--blue);}
+.page-sub{font-size:13px;color:var(--muted2);margin-top:5px;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;}
+.card-sm{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.card-title{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;}
+.card-title-blue{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+.mb8{margin-bottom:8px;}.mb16{margin-bottom:16px;}.mb24{margin-bottom:24px;}
+.flex{display:flex;}.gap8{gap:8px;}.gap12{gap:12px;}.gap16{gap:16px;}
+.flex-between{display:flex;justify-content:space-between;align-items:center;}
+
+/* ═══════════════════════════ STAT CARDS ═══════════════════════════ */
+.stat-card{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;border-left:3px solid var(--blue);}
+.stat-label{font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+.stat-val{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--white);}
+.stat-val.pos{color:var(--blue);}
+.stat-val.neg{color:var(--red);}
+.stat-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+
+/* ═══════════════════════════ FORMS ═══════════════════════════ */
+.lbl{display:block;font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted2);margin-bottom:5px;}
+.inp{
+  width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:4px;
+  padding:11px 12px;font-family:var(--body);font-size:13px;color:var(--white);outline:none;
+  transition:border-color 0.15s;
+}
+.inp:focus{border-color:var(--blue);}
+.inp::placeholder{color:var(--muted);}
+select.inp option{background:#0d1b35;}
+textarea.inp{resize:vertical;min-height:80px;}
+.inp-mono{font-family:var(--mono);}
+.field{display:flex;flex-direction:column;gap:0;}
+
+/* Range slider */
+.range-wrap{display:flex;align-items:center;gap:12px;}
+.range-wrap input[type=range]{flex:1;accent-color:var(--blue);cursor:pointer;height:4px;}
+.range-val{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--white);min-width:24px;text-align:center;}
+
+/* ═══════════════════════════ BUTTONS ═══════════════════════════ */
+.btn{border:none;cursor:pointer;font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:0.06em;border-radius:4px;padding:11px 22px;transition:all 0.15s;text-transform:uppercase;}
+.btn-blue{background:var(--blue);color:var(--white);box-shadow:0 2px 16px rgba(0,119,182,0.35);}
+.btn-blue:hover{background:var(--blue-lit);transform:translateY(-1px);box-shadow:0 4px 24px rgba(0,119,182,0.5);}
+.btn-outline{background:none;border:1px solid var(--border2);color:var(--muted2);}
+.btn-outline:hover{border-color:var(--blue);color:var(--white);}
+.btn-red{background:none;border:1px solid transparent;color:var(--muted);font-size:11px;padding:5px 10px;}
+.btn-red:hover{border-color:var(--red);color:var(--red);}
+.btn-sm{padding:7px 14px;font-size:11px;}
+.btn-lg{padding:14px 32px;font-size:13px;}
+.btn-full{width:100%;}
+
+/* ═══════════════════════════ BADGES / PILLS ═══════════════════════════ */
+.badge{display:inline-block;padding:3px 8px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:0.06em;font-family:var(--mono);}
+.badge-long{background:rgba(0,119,182,0.15);color:var(--blue);border:1px solid rgba(0,119,182,0.4);}
+.badge-short{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,71,111,0.4);}
+.badge-pos{background:rgba(0,119,182,0.15);color:var(--blue);}
+.badge-neg{background:var(--red-dim);color:var(--red);}
+.badge-grade-ab{background:rgba(0,119,182,0.15);color:var(--blue);border:1px solid rgba(0,119,182,0.4);}
+.badge-grade-c{background:rgba(255,255,255,0.08);color:var(--white);border:1px solid var(--border2);}
+.badge-grade-df{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,71,111,0.4);}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;background:rgba(255,255,255,0.06);color:var(--muted2);border:1px solid var(--border);}
+
+/* ═══════════════════════════ TABLE ═══════════════════════════ */
+.tbl-wrap{border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{background:var(--card2);border-bottom:1px solid var(--border2);}
+th{padding:11px 12px;text-align:left;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted2);white-space:nowrap;cursor:pointer;user-select:none;}
+th:hover{color:var(--white);}
+th.sort-asc::after{content:" ▲";color:var(--blue);}
+th.sort-desc::after{content:" ▼";color:var(--blue);}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle;}
+tbody tr:hover{background:rgba(0,119,182,0.06);}
+tbody tr:last-child td{border-bottom:none;}
+.mono{font-family:var(--mono);}
+
+/* ═══════════════════════════ 4-SECTION TRADE FORM ═══════════════════════════ */
+.section-block{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  overflow:hidden;margin-bottom:16px;
+}
+.section-block-header{
+  background:var(--card2);padding:14px 20px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border);cursor:pointer;
+}
+.section-num{
+  width:28px;height:28px;border-radius:4px;background:var(--blue);
+  font-family:var(--head);font-size:13px;font-weight:800;color:var(--white);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.section-block-title{font-family:var(--head);font-size:13px;font-weight:700;color:var(--white);letter-spacing:0.04em;}
+.section-block-desc{font-size:11px;color:var(--muted);margin-left:auto;}
+.section-block-body{padding:20px;display:grid;gap:16px;}
+
+/* Chart upload slot */
+.chart-slot{
+  border:2px dashed var(--border2);border-radius:6px;
+  padding:28px;text-align:center;cursor:pointer;transition:border-color 0.2s;
+  position:relative;overflow:hidden;min-height:120px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+}
+.chart-slot:hover{border-color:var(--blue);}
+.chart-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:4px;}
+.chart-slot-label{font-size:11px;color:var(--muted);letter-spacing:0.08em;}
+.chart-slot-icon{font-size:28px;line-height:1;}
+
+/* Comparison row (planned vs actual) */
+.cmp-row{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;}
+.cmp-vs{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;}
+
+/* Plan grade */
+.grade-btn-wrap{display:flex;gap:8px;flex-wrap:wrap;}
+.grade-btn{
+  padding:10px 16px;border-radius:4px;border:1px solid var(--border2);
+  background:none;color:var(--muted2);cursor:pointer;font-family:var(--mono);
+  font-size:14px;font-weight:700;transition:all 0.15s;min-width:48px;
+}
+.grade-btn:hover{border-color:var(--blue);color:var(--white);}
+.grade-btn.sel-ab{background:rgba(0,119,182,0.2);border-color:var(--blue);color:var(--blue);}
+.grade-btn.sel-c{background:rgba(255,255,255,0.1);border-color:#aaa;color:var(--white);}
+.grade-btn.sel-df{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+
+/* Checklist in during-trade */
+.check-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}
+.check-item:last-child{border-bottom:none;}
+.check-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;}
+.check-item-label{font-size:13px;color:var(--muted2);}
+
+/* R multiple display */
+.r-display{
+  background:var(--card2);border:1px solid var(--border);border-radius:6px;
+  padding:16px;text-align:center;
+}
+.r-display .r-val{font-family:var(--mono);font-size:36px;font-weight:700;}
+.r-display .r-label{font-size:10px;color:var(--muted);letter-spacing:0.14em;margin-top:4px;}
+
+/* ═══════════════════════════ TOAST ═══════════════════════════ */
+#toast{position:fixed;bottom:28px;right:28px;padding:12px 20px;border-radius:6px;font-size:13px;font-weight:600;z-index:9999;display:none;font-family:var(--body);}
+#toast.show{display:block;animation:fadeUp 0.3s ease;}
+#toast.success{background:rgba(0,119,182,0.15);border:1px solid var(--blue);color:var(--blue);}
+#toast.error{background:var(--red-dim);border:1px solid var(--red);color:var(--red);}
+
+/* ═══════════════════════════ BROKER SYNC ═══════════════════════════ */
+.broker-placeholder{
+  border:2px dashed var(--border2);border-radius:8px;padding:48px;
+  text-align:center;
+}
+.broker-icon{font-size:48px;margin-bottom:16px;}
+.broker-title{font-family:var(--head);font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px;}
+.broker-desc{font-size:13px;color:var(--muted2);line-height:1.7;max-width:480px;margin:0 auto 20px;}
+.broker-badge{display:inline-block;padding:4px 12px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:rgba(0,119,182,0.1);border:1px solid var(--blue);color:var(--blue);}
+
+/* ═══════════════════════════ WEEKLY REVIEW HEATMAP ═══════════════════════════ */
+.heat-row{display:grid;grid-template-columns:80px repeat(7,1fr);gap:4px;margin-bottom:4px;align-items:center;}
+.heat-label{font-size:10px;color:var(--muted);text-align:right;padding-right:8px;}
+.heat-cell{height:28px;border-radius:3px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;}
+
+/* ═══════════════════════════ DASHBOARD EQUITY SVG ═══════════════════════════ */
+#equity-svg{width:100%;overflow:visible;}
+
+/* ═══════════════════════════ PERF ═══════════════════════════ */
+.perf-bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.perf-bar-label{width:100px;font-size:11px;color:var(--muted2);flex-shrink:0;}
+.perf-bar-track{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden;}
+.perf-bar-fill{height:100%;border-radius:3px;background:var(--blue);}
+.perf-bar-val{font-family:var(--mono);font-size:11px;color:var(--white);min-width:60px;text-align:right;}
+
+/* ═══════════════════════════ RESPONSIVE ═══════════════════════════ */
+@media(max-width:960px){
+  .g2,.g3,.g4,.g6{grid-template-columns:1fr 1fr;}
+  .nav-tab{padding:7px 10px;font-size:11px;}
+  main{padding:72px 14px 40px;}
+}
+@media(max-width:600px){
+  .g2,.g3,.g4,.g6{grid-template-columns:1fr;}
+  .cmp-row{grid-template-columns:1fr;gap:6px;}
+  .cmp-vs{display:none;}
+}
+
+/* ═══════════════════════════ IMPORT TAB ═══════════════════════════ */
+.broker-card {
+  background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  padding:18px;cursor:pointer;transition:all 0.18s;text-align:center;
+}
+.broker-card:hover{border-color:var(--blue);background:var(--blue-dim);}
+.broker-card.selected{border-color:var(--blue);background:rgba(0,119,182,0.15);box-shadow:0 0 0 2px rgba(0,119,182,0.3);}
+.broker-card-logo{font-size:32px;margin-bottom:8px;}
+.broker-card-name{font-family:var(--head);font-weight:700;font-size:13px;color:var(--white);margin-bottom:4px;}
+.broker-card-desc{font-size:10px;color:var(--muted2);line-height:1.5;}
+.broker-card-badge{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.broker-card-badge.auto{background:rgba(0,119,182,0.2);color:var(--blue);border:1px solid rgba(0,119,182,0.4);}
+.broker-card-badge.manual{background:rgba(255,255,255,0.07);color:var(--muted2);border:1px solid var(--border2);}
+
+.preview-tbl-wrap{border:1px solid var(--border);border-radius:6px;overflow:auto;max-height:320px;}
+.preview-valid-row{border-left:3px solid var(--blue);}
+.preview-warn-row{border-left:3px solid var(--red);}
+
+.imp-stat{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:12px 16px;text-align:center;}
+.imp-stat-val{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--white);}
+.imp-stat-val.pos{color:var(--blue);}
+.imp-stat-val.warn{color:#f4a261;}
+.imp-stat-val.neg{color:var(--red);}
+.imp-stat-lbl{font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted2);margin-top:4px;}
+
+.guide-card{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:16px;}
+.guide-card-title{font-family:var(--head);font-weight:700;font-size:12px;color:var(--white);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.guide-step{display:flex;gap:10px;margin-bottom:8px;font-size:12px;color:var(--muted2);line-height:1.5;}
+.guide-step-num{width:20px;height:20px;border-radius:50%;background:var(--blue);color:var(--white);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+.section-block-body.collapsed{display:none;}
+.collapse-arrow{transition:transform 0.2s;color:var(--muted2);font-size:12px;}
+.collapsed-state .collapse-arrow{transform:rotate(-90deg);}
+
+/* divider */
+hr{border:none;border-top:1px solid var(--border);margin:20px 0;}
+.section-divider{
+  display:flex;align-items:center;gap:12px;margin:28px 0 20px;
+}
+.section-divider-line{flex:1;height:1px;background:var(--border);}
+.section-divider-label{font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--blue);white-space:nowrap;}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ SPLASH SCREEN ═══════════════════ -->
+<div id="splash">
+  <div class="splash-grid-bg"></div>
+  <div class="splash-glow"></div>
+  <div class="splash-content">
+    <div class="splash-logo-wrap">
+      <img id="splash-logo" src="" alt="LTI Logo" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div class="splash-brand">
+      <div class="splash-inst">Lucrative Trader Institute</div>
+      <div class="splash-rule"></div>
+      <div class="splash-title">TRADING<br><span>JOURNAL</span></div>
+      <div class="splash-subtitle">2026 The Page Keeps Receipts</div>
+    </div>
+    <div class="splash-tagline">
+      Separate good process from good luck.<br>
+      Decide if the next trade is the same setup or just the same itch.
+    </div>
+    <button class="splash-enter" id="splash-enter-btn" onclick="showAuthModal()" style="opacity:0.5;cursor:not-allowed;" disabled>Checking auth…</button>
+    <div class="splash-version">
+      <a href="mailto:lucrativetraderinstitute@gmail.com" style="color:var(--blue);text-decoration:none;letter-spacing:0.06em;">lucrativetraderinstitute@gmail.com</a>
+      <span style="display:block;margin-top:6px;color:var(--muted);font-size:10px;letter-spacing:0.12em;">&copy; LucrativeTraderInstitute. All rights reserved.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ AUTH MODAL ═══════════════════ -->
+<div id="auth-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(5,13,28,0.93);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;">
+  <div style="background:#0d1b35;border:1px solid var(--border2);border-radius:12px;width:100%;max-width:420px;padding:40px;position:relative;box-shadow:0 32px 80px rgba(0,0,0,0.6);">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-family:var(--head);font-size:22px;font-weight:900;color:var(--white);letter-spacing:0.04em;">LTI JOURNAL</div>
+      <div style="font-size:11px;color:var(--muted);letter-spacing:0.16em;margin-top:4px;">LUCRATIVE TRADER INSTITUTE</div>
+    </div>
+    <!-- Tab switcher -->
+    <div style="display:flex;background:var(--card2);border:1px solid var(--border);border-radius:6px;margin-bottom:24px;overflow:hidden;">
+      <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;font-family:var(--body);font-size:12px;font-weight:700;letter-spacing:0.08em;border:none;cursor:pointer;transition:all 0.15s;background:var(--blue);color:var(--white);">LOG IN</button>
+      <button id="auth-tab-signup" onclick="switchAuthTab('signup')" style="flex:1;padding:10px;font-family:var(--body);font-size:12px;font-weight:700;letter-spacing:0.08em;border:none;cursor:pointer;transition:all 0.15s;background:transparent;color:var(--muted2);">CREATE ACCOUNT</button>
+    </div>
+    <!-- Email / password fields -->
+    <div style="display:grid;gap:12px;margin-bottom:16px;">
+      <input class="inp" type="email" id="auth-email" placeholder="Email address" autocomplete="email">
+      <input class="inp" type="password" id="auth-password" placeholder="Password (min 8 characters)" autocomplete="current-password">
+      <!-- Signup-only fields -->
+      <div id="auth-signup-extras" style="display:none;display:grid;gap:12px;">
+        <input class="inp" type="text" id="auth-name" placeholder="Display name (optional)">
+        <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:12px;color:var(--muted2);line-height:1.5;">
+          <input type="checkbox" id="auth-newsletter" checked style="margin-top:2px;accent-color:var(--blue);">
+          <span>Subscribe to LTI newsletter &amp; trading insights. You can unsubscribe at any time.</span>
+        </label>
+        <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:12px;color:var(--muted2);line-height:1.5;">
+          <input type="checkbox" id="auth-terms" style="margin-top:2px;accent-color:var(--blue);">
+          <span>I agree to the <span style="color:var(--blue);">Terms of Service</span> and confirm this journal is for personal record-keeping only, not regulated financial advice.</span>
+        </label>
+      </div>
+    </div>
+    <!-- Forgot password -->
+    <div id="auth-forgot-wrap" style="text-align:right;margin-bottom:16px;">
+      <span onclick="sendPasswordReset()" style="font-size:11px;color:var(--blue);cursor:pointer;letter-spacing:0.04em;">Forgot password?</span>
+    </div>
+    <!-- Error message -->
+    <div id="auth-error" style="display:none;background:var(--red-dim);border:1px solid rgba(239,71,111,0.4);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:14px;line-height:1.5;"></div>
+    <!-- Success message -->
+    <div id="auth-success" style="display:none;background:rgba(0,119,182,0.1);border:1px solid rgba(0,119,182,0.4);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:14px;line-height:1.5;"></div>
+    <!-- Submit button -->
+    <button id="auth-submit-btn" onclick="handleAuthSubmit()" class="btn btn-blue btn-full btn-lg" style="margin-bottom:16px;">LOG IN</button>
+    <!-- Divider -->
+    <div style="text-align:center;font-size:11px;color:var(--muted);margin-bottom:16px;position:relative;">
+      <span style="background:#0d1b35;padding:0 12px;position:relative;z-index:1;">OR CONTINUE WITH</span>
+      <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border);"></div>
+    </div>
+    <!-- Google sign-in -->
+    <button onclick="handleGoogleSignIn()" style="width:100%;padding:12px;background:var(--card2);border:1px solid var(--border2);border-radius:6px;cursor:pointer;font-family:var(--body);font-size:13px;font-weight:600;color:var(--white);display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.15s;">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.4 30.3 0 24 0 14.7 0 6.7 5.4 2.7 13.3l7.8 6.1C12.4 13 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17z"/><path fill="#FBBC05" d="M10.5 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.1.7-4.6l-7.8-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.2 0 11.5-2 15.3-5.5l-7.5-5.8c-2.1 1.4-4.7 2.3-7.8 2.3-6.2 0-11.5-3.5-13.4-8.6l-7.9 6.2C6.7 42.6 14.7 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <!-- Privacy notice -->
+    <div style="margin-top:16px;font-size:10px;color:var(--muted);text-align:center;line-height:1.6;">
+      Your trade data is stored securely in your account only.<br>
+      We never sell or share personal data. <span style="color:var(--blue);">Privacy Policy</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ APP SHELL ═══════════════════ -->
+<div id="app">
+<nav id="nav">
+  <div class="nav-brand">
+    <div class="nav-logo" id="nav-logo-wrap"></div>
+    <div class="nav-brand-text">
+      <div class="nav-title">LTI JOURNAL</div>
+      <div class="nav-sub">Lucrative Trader Institute</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="nav-tab" onclick="showTab('new')">+ Log Trade</button>
+    <button class="nav-tab" onclick="showTab('log')">Trade Log</button>
+    <button class="nav-tab" onclick="showTab('review')">Weekly Review</button>
+    <button class="nav-tab" onclick="showTab('performance')">Performance</button>
+    <button class="nav-tab" onclick="showTab('playbook')">Playbook</button>
+    <button class="nav-tab" onclick="showTab('broker')">Broker Sync</button>
+    <button class="nav-tab" onclick="showTab('import')">📥 Import</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;padding-right:4px;">
+    <div id="nav-user-info" style="display:none;align-items:center;gap:8px;">
+      <div id="nav-user-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--white);flex-shrink:0;"></div>
+      <div style="display:grid;">
+        <div id="nav-user-email" style="font-size:10px;color:var(--muted2);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+      </div>
+    </div>
+    <button id="nav-signout-btn" onclick="handleSignOut()" style="display:none;background:none;border:1px solid var(--border2);color:var(--muted2);padding:6px 12px;border-radius:4px;cursor:pointer;font-family:var(--body);font-size:11px;font-weight:600;letter-spacing:0.06em;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted2)'">SIGN OUT</button>
+  </div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-badge" id="nav-date"></div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════════ DASHBOARD ═══════════ -->
+<section id="sec-dashboard" class="section active">
+  <div class="page-header flex-between">
+    <div>
+      <div class="page-eyebrow">Overview</div>
+      <div class="page-title">Good morning, <span>Trader.</span></div>
+      <div class="page-sub">Here is your edge. Track it. Protect it. The journal separates skill from luck.</div>
+    </div>
+    <button class="btn btn-blue" onclick="showTab('new')">+ Log Trade</button>
+  </div>
+
+  <div class="g6 mb16" id="stat-cards"></div>
+
+  <div class="g2 mb16">
+    <div class="card">
+      <div class="card-title">Equity Curve</div>
+      <svg id="equity-svg" viewBox="0 0 500 100" height="100">
+        <text x="250" y="55" text-anchor="middle" fill="#1a2f50" font-size="12" font-family="Space Grotesk">Log trades to build your equity curve</text>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-title">Setup Tag Performance</div>
+      <div id="tag-breakdown"></div>
+    </div>
+  </div>
+
+  <div class="g2 mb16">
+    <div class="card">
+      <div class="card-title">Emotional State vs P&amp;L</div>
+      <div id="emotion-breakdown" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Session Performance</div>
+      <div id="session-breakdown"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title flex-between" style="display:flex;">
+      <span>Recent Trades</span>
+      <button class="btn btn-outline btn-sm" onclick="showTab('log')">View All</button>
+    </div>
+    <div id="recent-trades-dash"></div>
+  </div>
+</section>
+
+<!-- ═══════════ NEW TRADE 4-SECTION FRAMEWORK ═══════════ -->
+<section id="sec-new" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Log Entry</div>
+    <div class="page-title">New <span>Trade</span></div>
+    <div class="page-sub">Complete all 4 sections. Partial entries accepted finish post trade fields after close.</div>
+  </div>
+
+  <!-- ─── SECTION 1: PRE TRADE ANALYSIS ─── -->
+  <div class="section-block" id="block1">
+    <div class="section-block-header" onclick="toggleBlock('block1')">
+      <div class="section-num">1</div>
+      <div class="section-block-title">PRE TRADE ANALYSIS</div>
+      <div class="section-block-desc">Setup  Thesis  Risk Plan</div>
+      <span class="collapse-arrow">▼</span>
+    </div>
+    <div class="section-block-body" style="grid-template-columns:1fr 1fr;gap:20px;">
+
+      <div style="display:grid;gap:14px;">
+        <div class="g2">
+          <div class="field"><label class="lbl">Date</label><input class="inp" type="date" id="nt-date"></div>
+          <div class="field"><label class="lbl">Time (24h)</label><input class="inp inp-mono" type="time" id="nt-time" placeholder="09:30"></div>
+        </div>
+        <div class="g2">
+          <div class="field"><label class="lbl">Symbol</label><input class="inp inp-mono" id="nt-symbol" placeholder="e.g. EURUSD"></div>
+          <div class="field"><label class="lbl">Session</label>
+            <select class="inp" id="nt-session">
+              <option>London</option><option>New York</option><option>Asian</option><option>London/NY Overlap</option>
+            </select></div>
+        </div>
+        <div class="g2">
+          <div class="field"><label class="lbl">Direction</label>
+            <select class="inp" id="nt-dir"><option>LONG</option><option>SHORT</option></select></div>
+          <div class="field"><label class="lbl">Qty / Position Size</label>
+            <input class="inp inp-mono" type="number" id="nt-size" placeholder="1.00" step="0.01"></div>
+        </div>
+        <div class="field"><label class="lbl">Setup Tag</label>
+          <select class="inp" id="nt-tag">
+            <option value=""> Select Setup Tag </option>
+            <option>BREAKOUT_RETEST</option>
+            <option>REVERSAL_HTF_POI</option>
+            <option>TREND_PULLBACK</option>
+            <option>MOMENTUM_BURST</option>
+            <option>RANGE_FADE</option>
+            <option>NEWS_CATALYST</option>
+            <option>SCALP_LVL</option>
+            <option>LIQUIDITY_SWEEP</option>
+            <option>FVG_FILL</option>
+            <option>ORDER_BLOCK</option>
+            <option>CHOCH_ENTRY</option>
+            <option>SUPPLY_DEMAND</option>
+          </select></div>
+
+        <div class="field"><label class="lbl">Market Conditions / News Context</label>
+          <textarea class="inp" id="nt-market" rows="3" placeholder="DXY direction, key news releases, HTF bias, market structure..."></textarea></div>
+
+        <div class="field"><label class="lbl">Trade Thesis</label>
+          <textarea class="inp" id="nt-thesis" rows="4" placeholder="WHY are you taking this trade? What do you see? What needs to happen for this to work?"></textarea></div>
+      </div>
+
+      <div style="display:grid;gap:14px;align-content:start;">
+        <!-- Risk Plan -->
+        <div class="card-sm" style="border-left:3px solid var(--blue);">
+          <div class="card-title-blue">Risk Plan</div>
+          <div class="g2" style="gap:10px;">
+            <div class="field"><label class="lbl">Planned Entry</label><input class="inp inp-mono" type="number" id="nt-entry-plan" placeholder="0.00" step="0.00001"></div>
+            <div class="field"><label class="lbl">Stop Level</label><input class="inp inp-mono" type="number" id="nt-stop" placeholder="0.00" step="0.00001"></div>
+            <div class="field"><label class="lbl">Target Level</label><input class="inp inp-mono" type="number" id="nt-target" placeholder="0.00" step="0.00001"></div>
+            <div class="field"><label class="lbl">Risk $ Amount</label><input class="inp inp-mono" type="number" id="nt-risk-dollar" placeholder="0.00" oninput="calcR()"></div>
+            <div class="field"><label class="lbl">Risk % of Account</label><input class="inp inp-mono" type="number" id="nt-risk-pct" placeholder="1.0" step="0.1"></div>
+            <div class="r-display">
+              <div class="r-label">PLANNED R:R</div>
+              <div class="r-val pos" id="planned-rr-display"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart screenshots -->
+        <div>
+          <div class="lbl" style="margin-bottom:8px;">Chart Screenshots (Pre Trade)</div>
+          <div class="g2" style="gap:8px;">
+            <div class="chart-slot" onclick="triggerUpload('pre1')" id="pre1-slot">
+              <div class="chart-slot-icon">📸</div>
+              <div class="chart-slot-label">HTF Chart<br>Click to upload</div>
+              <input type="file" id="pre1" accept="image/*" style="display:none" onchange="previewChart(this,'pre1-slot')">
+            </div>
+            <div class="chart-slot" onclick="triggerUpload('pre2')" id="pre2-slot">
+              <div class="chart-slot-icon">📸</div>
+              <div class="chart-slot-label">Entry TF Chart<br>Click to upload</div>
+              <input type="file" id="pre2" accept="image/*" style="display:none" onchange="previewChart(this,'pre2-slot')">
+            </div>
+          </div>
+        </div>
+
+        <!-- Emotional state -->
+        <div class="card-sm">
+          <div class="card-title-blue">Pre Trade Mental State</div>
+          <div class="field mb16">
+            <label class="lbl">Emotional State (1 = Wreck, 10 = Locked In)</label>
+            <div class="range-wrap">
+              <input type="range" min="1" max="10" value="7" id="nt-emotion-score" oninput="document.getElementById('emo-val').textContent=this.value">
+              <div class="range-val" id="emo-val">7</div>
+            </div>
+          </div>
+          <div class="field mb16">
+            <label class="lbl">Confidence (1 = Hesitant, 10 = Conviction)</label>
+            <div class="range-wrap">
+              <input type="range" min="1" max="10" value="7" id="nt-confidence" oninput="document.getElementById('conf-val').textContent=this.value">
+              <div class="range-val" id="conf-val">7</div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Emotional State Tag</label>
+            <select class="inp" id="nt-emotion">
+              <option>Calm</option><option>Confident</option><option>Focused</option>
+              <option>Anxious</option><option>FOMO</option><option>Revenge</option>
+              <option>Bored</option><option>Overconfident</option><option>Fatigued</option>
+            </select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 2: DURING TRADE ─── -->
+  <div class="section-block" id="block2">
+    <div class="section-block-header" onclick="toggleBlock('block2')">
+      <div class="section-num">2</div>
+      <div class="section-block-title">DURING TRADE</div>
+      <div class="section-block-desc">Management  Partials  Live Checks</div>
+      <span class="collapse-arrow">▼</span>
+    </div>
+    <div class="section-block-body" style="grid-template-columns:1fr 1fr;gap:20px;">
+      <div style="display:grid;gap:14px;">
+        <div class="field"><label class="lbl">Actual Entry Price</label>
+          <input class="inp inp-mono" type="number" id="nt-entry-actual" placeholder="0.00" step="0.00001" oninput="calcR()"></div>
+
+        <div class="field"><label class="lbl">Stop Adjustments / Trailing Notes</label>
+          <textarea class="inp" id="nt-stop-adj" rows="3" placeholder="e.g. Moved SL to breakeven after +1R at 14:30..."></textarea></div>
+
+        <div class="field"><label class="lbl">Partials Taken</label>
+          <textarea class="inp" id="nt-partials" rows="3" placeholder="e.g. Took 50% off at +1.5R, letting runner go..."></textarea></div>
+
+        <div class="field"><label class="lbl">Management Notes</label>
+          <textarea class="inp" id="nt-mgmt" rows="3" placeholder="What are you watching? What would make you exit early?"></textarea></div>
+      </div>
+      <div style="display:grid;gap:14px;align-content:start;">
+        <div>
+          <div class="lbl" style="margin-bottom:10px;">Discipline Checklist (Live)</div>
+          <div id="checklist-wrap">
+            <label class="check-item"><input type="checkbox" class="disc-check"><span class="check-item-label">Following original trade plan</span></label>
+            <label class="check-item"><input type="checkbox" class="disc-check"><span class="check-item-label">Stop loss is set and has not moved against position</span></label>
+            <label class="check-item"><input type="checkbox" class="disc-check"><span class="check-item-label">Not adding to a losing position</span></label>
+            <label class="check-item"><input type="checkbox" class="disc-check"><span class="check-item-label">Position size matches risk plan</span></label>
+            <label class="check-item"><input type="checkbox" class="disc-check"><span class="check-item-label">Not revenge trading / chasing</span></label>
+          </div>
+        </div>
+        <div class="field"><label class="lbl">Live Emotional Check In</label>
+          <textarea class="inp" id="nt-live-emotion" rows="3" placeholder="How are you feeling RIGHT NOW in the trade? Any urge to deviate?"></textarea></div>
+        <div class="field"><label class="lbl">Plan Deviations (if any)</label>
+          <textarea class="inp" id="nt-deviations" rows="3" placeholder="Be honest. Did you move your stop? Entered too early? Note it here."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 3: POST TRADE ANALYSIS ─── -->
+  <div class="section-block" id="block3">
+    <div class="section-block-header" onclick="toggleBlock('block3')">
+      <div class="section-num">3</div>
+      <div class="section-block-title">POST TRADE ANALYSIS</div>
+      <div class="section-block-desc">Results  Debrief  Lesson</div>
+      <span class="collapse-arrow">▼</span>
+    </div>
+    <div class="section-block-body" style="grid-template-columns:1fr 1fr;gap:20px;">
+      <div style="display:grid;gap:14px;">
+        <!-- Planned vs Actual -->
+        <div>
+          <div class="lbl" style="margin-bottom:10px;">Planned vs Actual Entry/Exit</div>
+          <div class="cmp-row mb8">
+            <div class="field"><label class="lbl">Planned Entry</label><input class="inp inp-mono" type="number" id="post-entry-plan" placeholder="0.00" step="0.00001"></div>
+            <div class="cmp-vs">ENTRY<br>vs</div>
+            <div class="field"><label class="lbl">Actual Entry</label><input class="inp inp-mono" type="number" id="post-entry-actual" placeholder="0.00" step="0.00001" oninput="calcR()"></div>
+          </div>
+          <div class="cmp-row">
+            <div class="field"><label class="lbl">Planned Exit</label><input class="inp inp-mono" type="number" id="post-exit-plan" placeholder="0.00" step="0.00001"></div>
+            <div class="cmp-vs">EXIT<br>vs</div>
+            <div class="field"><label class="lbl">Actual Exit</label><input class="inp inp-mono" type="number" id="post-exit-actual" placeholder="0.00" step="0.00001" oninput="calcR()"></div>
+          </div>
+        </div>
+
+        <!-- P&L block -->
+        <div class="g3" style="gap:10px;">
+          <div class="field"><label class="lbl">P&amp;L ($)</label>
+            <input class="inp inp-mono" type="number" id="nt-pnl" placeholder="0.00" oninput="calcR()"></div>
+          <div class="field"><label class="lbl">P&amp;L (%)</label>
+            <input class="inp inp-mono" type="number" id="nt-pnl-pct" placeholder="0.00" step="0.01"></div>
+          <div class="r-display">
+            <div class="r-label">R MULTIPLE</div>
+            <div class="r-val" id="r-display"></div>
+          </div>
+        </div>
+
+        <div class="field"><label class="lbl">Exit Reason</label>
+          <select class="inp" id="nt-exit-reason">
+            <option>Target Hit</option>
+            <option>Stop Hit</option>
+            <option>Manual Close Plan Followed</option>
+            <option>Manual Close Early (discipline)</option>
+            <option>Manual Close Early (fear)</option>
+            <option>Trailing Stop</option>
+            <option>Partial + Runner Stopped</option>
+            <option>News Exit</option>
+          </select></div>
+
+        <div class="field"><label class="lbl">Post Trade Chart (Annotated)</label>
+          <div class="chart-slot" onclick="triggerUpload('post1')" id="post1-slot">
+            <div class="chart-slot-icon">📸</div>
+            <div class="chart-slot-label">Post trade chart<br>Annotate your entry/exit/stop</div>
+            <input type="file" id="post1" accept="image/*" style="display:none" onchange="previewChart(this,'post1-slot')">
+          </div></div>
+      </div>
+
+      <div style="display:grid;gap:14px;align-content:start;">
+        <div class="field"><label class="lbl">What Went Right</label>
+          <textarea class="inp" id="nt-right" rows="3" placeholder="Be specific. What did you execute well?"></textarea></div>
+
+        <div class="field"><label class="lbl">What Went Wrong</label>
+          <textarea class="inp" id="nt-wrong" rows="3" placeholder="Be brutally honest. No growth without accountability."></textarea></div>
+
+        <div class="field"><label class="lbl">Key Lesson (one sentence)</label>
+          <input class="inp" id="nt-lesson" placeholder="What does this trade teach you that you'll remember?"></div>
+
+        <div>
+          <div class="lbl" style="margin-bottom:10px;">Plan Grade (How well did you follow your process?)</div>
+          <div class="grade-btn-wrap" id="grade-wrap">
+            <button class="grade-btn" data-grade="A+" onclick="setGrade(this,'A+','ab')">A+</button>
+            <button class="grade-btn" data-grade="A" onclick="setGrade(this,'A','ab')">A</button>
+            <button class="grade-btn" data-grade="B" onclick="setGrade(this,'B','ab')">B</button>
+            <button class="grade-btn" data-grade="C" onclick="setGrade(this,'C','c')">C</button>
+            <button class="grade-btn" data-grade="D" onclick="setGrade(this,'D','df')">D</button>
+            <button class="grade-btn" data-grade="F" onclick="setGrade(this,'F','df')">F</button>
+          </div>
+          <input type="hidden" id="nt-grade" value="">
+        </div>
+
+        <div class="field"><label class="lbl">Additional Notes</label>
+          <textarea class="inp" id="nt-notes" rows="4" placeholder="Anything else worth remembering about this trade..."></textarea></div>
+
+        <button class="btn btn-blue btn-lg btn-full" onclick="addTrade()">💾 Save Trade to Journal</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════ TRADE LOG ═══════════ -->
+<section id="sec-log" class="section">
+  <div class="page-header flex-between">
+    <div>
+      <div class="page-eyebrow">All Entries</div>
+      <div class="page-title">Trade <span>Log</span></div>
+    </div>
+    <button class="btn btn-blue" onclick="showTab('new')">+ Log Trade</button>
+  </div>
+
+  <div class="flex gap8 mb16" style="flex-wrap:wrap;">
+    <input class="inp" style="width:150px" id="f-symbol" placeholder="Filter symbol..." oninput="renderLog()">
+    <select class="inp" style="width:130px" id="f-dir" onchange="renderLog()">
+      <option value="">All Directions</option><option>LONG</option><option>SHORT</option>
+    </select>
+    <select class="inp" style="width:150px" id="f-session" onchange="renderLog()">
+      <option value="">All Sessions</option>
+      <option>London</option><option>New York</option><option>Asian</option><option>London/NY Overlap</option>
+    </select>
+    <select class="inp" style="width:170px" id="f-tag" onchange="renderLog()">
+      <option value="">All Setup Tags</option>
+    </select>
+    <select class="inp" style="width:120px" id="f-result" onchange="renderLog()">
+      <option value="">All Results</option><option value="win">Win</option><option value="loss">Loss</option>
+    </select>
+    <button class="btn btn-outline btn-sm" onclick="clearFilters()">Clear Filters</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table id="log-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable('date')">Date</th>
+          <th onclick="sortTable('time')">Time</th>
+          <th onclick="sortTable('symbol')">Symbol</th>
+          <th>Dir</th>
+          <th>Tag</th>
+          <th>Session</th>
+          <th onclick="sortTable('pnl')">P&amp;L $</th>
+          <th onclick="sortTable('pnl_pct')">P&amp;L %</th>
+          <th onclick="sortTable('r')">R Mult</th>
+          <th>Exit Reason</th>
+          <th>Grade</th>
+          <th>Emotion</th>
+          <th>Lesson</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="log-tbody"></tbody>
+    </table>
+    <div id="log-empty" style="padding:40px;text-align:center;color:var(--muted);font-size:13px;display:none;">No trades match filters.</div>
+  </div>
+</section>
+
+<!-- ═══════════ WEEKLY REVIEW SECTION 4 ═══════════ -->
+<section id="sec-review" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Section 4 Reflection</div>
+    <div class="page-title">Weekly <span>Review</span></div>
+    <div class="page-sub" id="review-date-label"></div>
+  </div>
+
+  <div class="g4 mb16" id="review-stats"></div>
+
+  <div class="g2 mb16">
+    <div class="card">
+      <div class="card-title-blue">Best Setups This Week</div>
+      <div id="best-setups"></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--red)">Worst Setups This Week</div>
+      <div id="worst-setups"></div>
+    </div>
+  </div>
+
+  <div class="g2 mb16">
+    <div class="card">
+      <div class="card-title">Emotional Patterns</div>
+      <div id="emotion-patterns"></div>
+    </div>
+    <div class="card">
+      <div class="card-title-blue">Discipline Checklist</div>
+      <div>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Followed trading plan every session</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">No revenge trades taken</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Max daily loss respected</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Only took A/B grade setups</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Journaled every trade same day</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Reviewed charts before each session</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Did not move stops against position</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Sized all positions correctly</span></label>
+        <label class="check-item"><input type="checkbox"><span class="check-item-label">Executed premarket routine</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 mb16">
+    <div class="card">
+      <div class="card-title" style="color:var(--red)">Mistakes Made</div>
+      <textarea class="inp" rows="5" placeholder="Be brutally honest. Accountability is the rent you pay for progress."></textarea>
+    </div>
+    <div class="card">
+      <div class="card-title-blue">Lessons Learned</div>
+      <textarea class="inp" rows="5" placeholder="What did the market teach you this week?"></textarea>
+    </div>
+    <div class="card">
+      <div class="card-title-blue">Next Week Plan</div>
+      <textarea class="inp" rows="5" placeholder="What setups will you look for? What will you improve?"></textarea>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--muted2)">Mindset & Psychology</div>
+      <textarea class="inp" rows="5" placeholder="How was your mental state this week? What emotions came up? What patterns do you notice?"></textarea>
+    </div>
+  </div>
+
+  <div style="text-align:right;">
+    <button class="btn btn-blue" onclick="showToast('Weekly review saved','success')">Save Review</button>
+  </div>
+</section>
+
+<!-- ═══════════ PERFORMANCE ═══════════ -->
+<section id="sec-performance" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Analytics</div>
+    <div class="page-title">Performance <span>Stats</span></div>
+  </div>
+  <div id="perf-content"></div>
+</section>
+
+<!-- ═══════════ PLAYBOOK ═══════════ -->
+<section id="sec-playbook" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Strategy Library</div>
+    <div class="page-title">My <span>Playbook</span></div>
+    <div class="page-sub">Your edge, documented. Reference before every session.</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;" id="playbook-grid"></div>
+</section>
+
+<!-- ═══════════ BROKER SYNC ═══════════ -->
+<section id="sec-broker" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Future Feature</div>
+    <div class="page-title">Broker <span>Sync</span></div>
+    <div class="page-sub">Placeholder for automated trade import via broker API</div>
+  </div>
+  <div class="broker-placeholder">
+    <div class="broker-icon">🔌</div>
+    <div class="broker-title">BROKER SYNC Coming Soon</div>
+    <div class="broker-desc">
+      This section is reserved for future API integration with your broker platform.
+      Once connected, your trades will import automatically no manual logging required for execution data.
+      You will still complete the Pre Trade Analysis and Post-Trade sections manually.
+    </div>
+    <div class="flex" style="justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+      <span class="broker-badge">MT4 / MT5</span>
+      <span class="broker-badge">cTrader</span>
+      <span class="broker-badge">Interactive Brokers</span>
+      <span class="broker-badge">TradingView Alerts</span>
+      <span class="broker-badge">Webhook Import</span>
+      <span class="broker-badge">CSV Import</span>
+    </div>
+    <button class="btn btn-outline" onclick="showToast('Broker sync not yet active check back in a future build','error')">Request Early Access</button>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="card-title">Manual CSV Import</div>
+    <p style="font-size:13px;color:var(--muted2);margin-bottom:16px;">
+      For now, use the CSV import below. Format: date, time, symbol, direction, entry, exit, size, pnl, stop, target, session, tag
+    </p>
+    <div class="flex gap8">
+      <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importCSV(this)">
+      <button class="btn btn-outline" onclick="document.getElementById('csv-import').click()">📁 Import CSV</button>
+      <button class="btn btn-outline" onclick="exportCSV()">📤 Export CSV</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ IMPORT ═══════════ -->
+<section id="sec-import" class="section">
+  <div class="page-header">
+    <div class="page-eyebrow">Data Import</div>
+    <div class="page-title">Import <span>Trades</span></div>
+    <div class="page-sub">Upload a CSV export from your broker. Your data is processed entirely in your browser — nothing is sent to any server.</div>
+  </div>
+
+  <!-- Regulatory notice -->
+  <div id="import-reg-banner" style="background:rgba(0,119,182,0.07);border:1px solid var(--blue-mid);border-radius:8px;padding:16px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:flex-start;">
+    <div style="font-size:22px;flex-shrink:0;margin-top:2px;">🔒</div>
+    <div>
+      <div style="font-family:var(--head);font-weight:700;font-size:13px;color:var(--white);margin-bottom:4px;">Privacy & Compliance Notice</div>
+      <div style="font-size:12px;color:var(--muted2);line-height:1.7;">
+        All CSV processing happens <strong style="color:var(--white);">locally in your browser</strong>. No trade data, account information, or personally identifiable information (PII) is transmitted to any external server. 
+        This tool does not store your broker credentials or API keys. Import is read-only — it cannot place, modify, or cancel orders on your behalf. 
+        Ensure your broker CSV exports comply with your jurisdiction's data handling requirements before sharing files.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Choose broker -->
+  <div class="section-block" id="imp-block1">
+    <div class="section-block-header" onclick="toggleBlock('imp-block1')">
+      <div class="section-num">1</div>
+      <div class="section-block-title">SELECT BROKER FORMAT</div>
+      <div class="section-block-desc">Choose your broker to auto-map columns</div>
+      <span class="collapse-arrow">▼</span>
+    </div>
+    <div class="section-block-body" style="grid-template-columns:1fr;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;" id="broker-cards"></div>
+      <div id="custom-mapping-wrap" style="display:none;margin-top:8px;">
+        <div class="card-title-blue" style="margin-bottom:12px;">Custom Column Mapping</div>
+        <div style="font-size:12px;color:var(--muted2);margin-bottom:14px;">Map your CSV column headers to journal fields. Leave blank to skip that field.</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;" id="custom-map-fields"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Upload -->
+  <div class="section-block" id="imp-block2">
+    <div class="section-block-header" onclick="toggleBlock('imp-block2')">
+      <div class="section-num">2</div>
+      <div class="section-block-title">UPLOAD CSV FILE</div>
+      <div class="section-block-desc">Drag & drop or click to browse</div>
+      <span class="collapse-arrow">▼</span>
+    </div>
+    <div class="section-block-body" style="grid-template-columns:1fr;">
+      <div id="drop-zone" style="border:2px dashed var(--border2);border-radius:8px;padding:48px 24px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;"
+        onclick="document.getElementById('csv-upload-input').click()"
+        ondragover="event.preventDefault();this.style.borderColor='var(--blue)';this.style.background='var(--blue-dim)';"
+        ondragleave="this.style.borderColor='var(--border2)';this.style.background='';"
+        ondrop="handleDrop(event)">
+        <div style="font-size:40px;margin-bottom:12px;">📂</div>
+        <div style="font-family:var(--head);font-weight:700;font-size:16px;color:var(--white);margin-bottom:6px;">Drop CSV file here</div>
+        <div style="font-size:12px;color:var(--muted);">or click to browse — .csv files only</div>
+        <input type="file" id="csv-upload-input" accept=".csv,.txt" style="display:none" onchange="handleFileSelect(this)">
+      </div>
+      <div id="file-info" style="display:none;" class="card-sm">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:24px;">📄</div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:13px;" id="file-name-display">—</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="file-size-display">—</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="clearImport()">✕ Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Preview -->
+  <div class="section-block" id="imp-block3">
+    <div class="section-block-header" onclick="toggleBlock('imp-block3')">
+      <div class="section-num">3</div>
+      <div class="section-block-title">PREVIEW & VALIDATE</div>
+      <div class="section-block-desc">Review mapped data before importing</div>
+      <span class="collapse-arrow">▼</span>
+    </div>
+    <div class="section-block-body" style="grid-template-columns:1fr;">
+      <div id="preview-area">
+        <div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">Upload a CSV file to preview mapped trades.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Import -->
+  <div class="section-block" id="imp-block4">
+    <div class="section-block-header" onclick="toggleBlock('imp-block4')">
+      <div class="section-num">4</div>
+      <div class="section-block-title">IMPORT OPTIONS</div>
+      <div class="section-block-desc">Duplicate handling and confirmation</div>
+      <span class="collapse-arrow">▼</span>
+    </div>
+    <div class="section-block-body" style="grid-template-columns:1fr 1fr;gap:20px;">
+      <div style="display:grid;gap:14px;">
+        <div class="field">
+          <label class="lbl">Duplicate Handling</label>
+          <select class="inp" id="dup-mode">
+            <option value="skip">Skip duplicates (recommended)</option>
+            <option value="overwrite">Overwrite existing</option>
+            <option value="allow">Allow all (may create duplicates)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">Default Session (if not in CSV)</label>
+          <select class="inp" id="imp-default-session">
+            <option>New York</option><option>London</option><option>Asian</option><option>London/NY Overlap</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">Default Setup Tag (if not in CSV)</label>
+          <select class="inp" id="imp-default-tag">
+            <option value=""> — None — </option>
+            <option>BREAKOUT_RETEST</option><option>REVERSAL_HTF_POI</option>
+            <option>TREND_PULLBACK</option><option>MOMENTUM_BURST</option>
+            <option>RANGE_FADE</option><option>NEWS_CATALYST</option>
+            <option>SCALP_LVL</option><option>LIQUIDITY_SWEEP</option>
+            <option>FVG_FILL</option><option>ORDER_BLOCK</option>
+            <option>CHOCH_ENTRY</option><option>SUPPLY_DEMAND</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;gap:14px;align-content:start;">
+        <div class="card-sm" style="border-left:3px solid var(--blue);">
+          <div class="card-title-blue">Import Summary</div>
+          <div id="import-summary" style="font-size:13px;color:var(--muted2);line-height:1.8;">
+            No file loaded yet.
+          </div>
+        </div>
+        <div style="background:var(--red-dim);border:1px solid rgba(239,71,111,0.3);border-radius:6px;padding:14px;font-size:11px;color:var(--muted2);line-height:1.7;">
+          <strong style="color:var(--red);display:block;margin-bottom:4px;">⚠️ Before You Import</strong>
+          Imported data supplements your manual journal entries. Always verify P&amp;L figures against your official broker statements. This tool does not constitute financial record-keeping for tax or regulatory purposes.
+        </div>
+        <button class="btn btn-blue btn-lg btn-full" id="do-import-btn" onclick="executeImport()" disabled style="opacity:0.4;cursor:not-allowed;">
+          💾 Import Trades to Journal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export section -->
+  <div class="card" style="margin-top:8px;">
+    <div class="card-title flex-between" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Export Journal Data</span>
+    </div>
+    <div style="font-size:13px;color:var(--muted2);margin-bottom:16px;line-height:1.7;">
+      Export your journal to CSV for backup, tax preparation, or analysis in Excel/Google Sheets.
+      Your data belongs to you — export anytime.
+    </div>
+    <div class="flex gap8">
+      <button class="btn btn-outline" onclick="exportCSV()">📤 Export All Trades (CSV)</button>
+      <button class="btn btn-outline" onclick="exportFilteredCSV()">📤 Export Filtered View</button>
+    </div>
+  </div>
+
+  <!-- Broker format guide -->
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">How to Export from Your Broker</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:4px;" id="broker-guide"></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════
+//  DATA & CONSTANTS
+// ════════════════════════════════════════════════
+const SETUP_TAGS = [
+  'BREAKOUT_RETEST','REVERSAL_HTF_POI','TREND_PULLBACK','MOMENTUM_BURST',
+  'RANGE_FADE','NEWS_CATALYST','SCALP_LVL','LIQUIDITY_SWEEP',
+  'FVG_FILL','ORDER_BLOCK','CHOCH_ENTRY','SUPPLY_DEMAND'
+];
+const SESSIONS = ['London','New York','Asian','London/NY Overlap'];
+const EMOTIONS = ['Calm','Confident','Focused','Anxious','FOMO','Revenge','Bored','Overconfident','Fatigued'];
+
+const PLAYBOOK_DATA = [
+  {name:'BREAKOUT_RETEST',emoji:'📈',grade:'A+',winRate:'68%',session:'London / Overlap',
+   pairs:['GBPUSD','NASDAQ','XAUUSD'],
+   desc:'Confirmed breaks of key S/R on high volume. Always wait for a retest before entry. Patience is the edge.',
+   rules:['H1+ close above/below the level required','Volume above average on breakout candle','Wait for retest no chase entries','SL beyond the breakout candle','Minimum 2R target required']},
+  {name:'REVERSAL_HTF_POI',emoji:'🔄',grade:'A',winRate:'62%',session:'London / NY Open',
+   pairs:['EURUSD','GBPJPY','XAUUSD'],
+   desc:'Counter-trend plays at major HTF points of interest. Require strong confluence. High R:R potential. Patience is critical.',
+   rules:['Clear HTF POI required','RSI divergence on M15 or H1','M15 confirmation candle entry','Stop beyond the POI','Minimum 3R target required']},
+  {name:'TREND_PULLBACK',emoji:'🎯',grade:'B+',winRate:'58%',session:'All sessions in trending markets',
+   pairs:['XAUUSD','NASDAQ','EURUSD'],
+   desc:'Trade with the dominant HTF trend on pullbacks to key EMAs or structure. Best in strong trending conditions.',
+   rules:['Trend clearly defined on H4 or Daily','Enter on pullback to 50 EMA or key level','Confirmation candle required','Stop below most recent swing low','Minimum 1.5R target']},
+  {name:'MOMENTUM_BURST',emoji:'⚡',grade:'A',winRate:'65%',session:'NY Open / News Events',
+   pairs:['NASDAQ','BTCUSD','SPX500'],
+   desc:'High probability continuation plays on strong momentum bursts. Often triggered by news catalysts.',
+   rules:['Strong body candle (70%+ of range)','Enter on first shallow pullback','Stop beyond the pullback candle','Hold until momentum structure breaks','Minimum 2R target']},
+];
+
+let trades = []; // populated from Firestore after auth
+
+let sortCol = 'date', sortDir = -1;
+let selectedGrade = '';
+
+// ════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════
+function showToast(msg,type='success'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='show '+type;
+  setTimeout(()=>el.className='',3200);
+}
+function fmtPnl(v){
+  const n=parseFloat(v)||0;
+  return (n>=0?'+':'')+new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(n);
+}
+function fmtR(v){
+  const n=parseFloat(v)||0;
+  return (n>=0?'+':'')+n.toFixed(2)+'R';
+}
+function gradeBadge(g){
+  if(!g) return '<span class="badge badge-grade-c"></span>';
+  const ab=['A+','A','B'];
+  const df=['D','F'];
+  if(ab.includes(g)) return `<span class="badge badge-grade-ab">${g}</span>`;
+  if(df.includes(g)) return `<span class="badge badge-grade-df">${g}</span>`;
+  return `<span class="badge badge-grade-c">${g}</span>`;
+}
+function pnlColor(v){return parseFloat(v)>=0?'var(--blue)':'var(--red)';}
+
+function calcStats(arr){
+  const wins=arr.filter(t=>parseFloat(t.pnl||0)>0);
+  const losses=arr.filter(t=>parseFloat(t.pnl||0)<=0);
+  const totalPnl=arr.reduce((a,t)=>a+parseFloat(t.pnl||0),0);
+  const winRate=arr.length?(wins.length/arr.length*100).toFixed(1):0;
+  const avgWin=wins.length?(wins.reduce((a,t)=>a+parseFloat(t.pnl||0),0)/wins.length).toFixed(2):0;
+  const avgLoss=losses.length?Math.abs(losses.reduce((a,t)=>a+parseFloat(t.pnl||0),0)/losses.length).toFixed(2):0;
+  const profitFactor=avgLoss>0?((wins.length*parseFloat(avgWin))/(losses.length*parseFloat(avgLoss))).toFixed(2):'∞';
+  const avgR=arr.length?(arr.reduce((a,t)=>a+parseFloat(t.r||0),0)/arr.length).toFixed(2):0;
+  const best=arr.length?Math.max(...arr.map(t=>parseFloat(t.pnl||0))):0;
+  const worst=arr.length?Math.min(...arr.map(t=>parseFloat(t.pnl||0))):0;
+  return{wins,losses,totalPnl,winRate,avgWin,avgLoss,profitFactor,avgR,best,worst};
+}
+
+// ════════════════════════════════════════════════
+//  SPLASH
+// ════════════════════════════════════════════════
+function enterApp(){
+  document.getElementById('splash').style.animation='splashOut 0.4s ease forwards';
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    document.getElementById('app').style.display='block';
+    renderDashboard();
+  },400);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('nt-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('nav-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).toUpperCase();
+  populateTagFilter();
+});
+const style=document.createElement('style');
+style.textContent=`@keyframes splashOut{from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(0.98);}}`;
+document.head.appendChild(style);
+
+// ════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════
+function showTab(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  const tabs=['dashboard','new','log','review','performance','playbook','broker','import'];
+  const btns=document.querySelectorAll('.nav-tab');
+  const idx=tabs.indexOf(id);
+  if(idx>=0) btns[idx].classList.add('active');
+  if(id==='dashboard') renderDashboard();
+  else if(id==='log') renderLog();
+  else if(id==='review') renderReview();
+  else if(id==='performance') renderPerformance();
+  else if(id==='playbook') renderPlaybook();
+  else if(id==='import') renderImportTab();
+}
+
+// ════════════════════════════════════════════════
+//  SECTION COLLAPSIBLE
+// ════════════════════════════════════════════════
+function toggleBlock(id){
+  const block=document.getElementById(id);
+  const body=block.querySelector('.section-block-body');
+  const arrow=block.querySelector('.collapse-arrow');
+  body.classList.toggle('collapsed');
+  arrow.style.transform=body.classList.contains('collapsed')?'rotate(-90deg)':'rotate(0)';
+}
+
+// ════════════════════════════════════════════════
+//  CHART UPLOAD
+// ════════════════════════════════════════════════
+function triggerUpload(id){document.getElementById(id).click();}
+function previewChart(input,slotId){
+  if(!input.files||!input.files[0]) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const slot=document.getElementById(slotId);
+    let img=slot.querySelector('img.preview-img');
+    if(!img){img=document.createElement('img');img.className='preview-img';slot.appendChild(img);}
+    img.src=e.target.result;
+    slot.querySelector('.chart-slot-icon').style.display='none';
+    slot.querySelector('.chart-slot-label').style.display='none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ════════════════════════════════════════════════
+//  R MULTIPLE CALCULATOR
+// ════════════════════════════════════════════════
+function calcR(){
+  const riskDollar=parseFloat(document.getElementById('nt-risk-dollar').value)||0;
+  const pnl=parseFloat(document.getElementById('nt-pnl').value)||0;
+  const rDisp=document.getElementById('r-display');
+  if(riskDollar>0&&pnl!==0){
+    const r=(pnl/riskDollar).toFixed(2);
+    rDisp.textContent=fmtR(r);
+    rDisp.style.color=parseFloat(r)>=0?'var(--blue)':'var(--red)';
+  } else {
+    rDisp.textContent='';rDisp.style.color='var(--white)';
+  }
+  // Planned R:R
+  const entry=parseFloat(document.getElementById('nt-entry-plan').value)||0;
+  const stop=parseFloat(document.getElementById('nt-stop').value)||0;
+  const target=parseFloat(document.getElementById('nt-target').value)||0;
+  const pRR=document.getElementById('planned-rr-display');
+  if(entry&&stop&&target){
+    const risk=Math.abs(entry-stop);
+    const reward=Math.abs(target-entry);
+    if(risk>0){pRR.textContent=(reward/risk).toFixed(2)+'R';}
+  }
+}
+
+// ════════════════════════════════════════════════
+//  GRADE SELECTOR
+// ════════════════════════════════════════════════
+function setGrade(btn,grade,type){
+  document.querySelectorAll('.grade-btn').forEach(b=>b.className='grade-btn');
+  btn.classList.add('sel-'+type);
+  selectedGrade=grade;
+  document.getElementById('nt-grade').value=grade;
+}
+
+// ════════════════════════════════════════════════
+//  ADD TRADE
+// ════════════════════════════════════════════════
+function addTrade(){
+  const sym=document.getElementById('nt-symbol').value.trim().toUpperCase();
+  const entry=document.getElementById('nt-entry-actual').value||document.getElementById('nt-entry-plan').value;
+  const pnl=document.getElementById('nt-pnl').value;
+  if(!sym){showToast('Symbol is required','error');return;}
+  const riskDollar=parseFloat(document.getElementById('nt-risk-dollar').value)||0;
+  const pnlVal=parseFloat(pnl)||0;
+  const r=riskDollar>0?parseFloat((pnlVal/riskDollar).toFixed(3)):0;
+  const trade={
+    id:Date.now(),
+    date:document.getElementById('nt-date').value,
+    time:document.getElementById('nt-time').value,
+    symbol:sym,
+    direction:document.getElementById('nt-dir').value,
+    session:document.getElementById('nt-session').value,
+    tag:document.getElementById('nt-tag').value,
+    entry_plan:document.getElementById('nt-entry-plan').value,
+    entry_actual:document.getElementById('nt-entry-actual').value||entry,
+    stop:document.getElementById('nt-stop').value,
+    target:document.getElementById('nt-target').value,
+    exit_plan:document.getElementById('post-exit-plan').value,
+    exit_actual:document.getElementById('post-exit-actual').value,
+    size:document.getElementById('nt-size').value||'1',
+    risk_dollar:riskDollar,
+    risk_pct:document.getElementById('nt-risk-pct').value,
+    pnl:pnlVal,
+    pnl_pct:document.getElementById('nt-pnl-pct').value||0,
+    r:r,
+    exit_reason:document.getElementById('nt-exit-reason').value,
+    grade:document.getElementById('nt-grade').value||'',
+    emotion:document.getElementById('nt-emotion').value,
+    emotion_score:document.getElementById('nt-emotion-score').value,
+    confidence:document.getElementById('nt-confidence').value,
+    market:document.getElementById('nt-market').value,
+    thesis:document.getElementById('nt-thesis').value,
+    mgmt:document.getElementById('nt-mgmt').value,
+    deviations:document.getElementById('nt-deviations').value,
+    what_right:document.getElementById('nt-right').value,
+    what_wrong:document.getElementById('nt-wrong').value,
+    lesson:document.getElementById('nt-lesson').value,
+    notes:document.getElementById('nt-notes').value,
+  };
+  trades.unshift(trade);
+  firestoreSaveTrade(trade);
+  showToast(`Trade logged: ${sym} ${trade.direction} | ${fmtPnl(pnlVal)} | ${fmtR(r)}`,'success');
+  // Reset key fields
+  ['nt-symbol','nt-entry-plan','nt-entry-actual','nt-stop','nt-target','nt-pnl','nt-pnl-pct',
+   'nt-risk-dollar','nt-risk-pct','nt-thesis','nt-market','nt-mgmt','nt-deviations',
+   'nt-right','nt-wrong','nt-lesson','nt-notes','nt-stop-adj','nt-partials','nt-live-emotion',
+   'post-entry-plan','post-entry-actual','post-exit-plan','post-exit-actual'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.querySelectorAll('.grade-btn').forEach(b=>b.className='grade-btn');
+  selectedGrade='';
+  document.getElementById('r-display').textContent='';
+  document.getElementById('r-display').style.color='var(--white)';
+  document.getElementById('nt-date').value=new Date().toISOString().split('T')[0];
+  showTab('log');
+}
+
+function deleteTrade(id){
+  if(!confirm('Remove this trade from the journal?')) return;
+  firestoreDeleteTrade(id);
+  trades=trades.filter(t=>t.id!==id);
+  showToast('Trade removed','error');
+  renderLog();
+}
+
+// ════════════════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════════════════
+function renderDashboard(){
+  const s=calcStats(trades);
+  // Stat cards
+  const statData=[
+    {label:'Total P&L',val:fmtPnl(s.totalPnl),cls:s.totalPnl>=0?'pos':'neg',sub:trades.length+' trades logged'},
+    {label:'Win Rate',val:s.winRate+'%',cls:'',sub:s.wins.length+'W / '+s.losses.length+'L'},
+    {label:'Profit Factor',val:s.profitFactor,cls:parseFloat(s.profitFactor)>=1?'pos':'neg',sub:'Target > 1.5'},
+    {label:'Avg R Multiple',val:s.avgR+'R',cls:parseFloat(s.avgR)>=0?'pos':'neg',sub:'Per trade'},
+    {label:'Best Trade',val:fmtPnl(s.best),cls:'pos',sub:'Single peak'},
+    {label:'Worst Trade',val:fmtPnl(s.worst),cls:'neg',sub:'Max loss'},
+  ];
+  document.getElementById('stat-cards').innerHTML=statData.map(d=>`
+    <div class="stat-card">
+      <div class="stat-label">${d.label}</div>
+      <div class="stat-val ${d.cls}">${d.val}</div>
+      <div class="stat-sub">${d.sub}</div>
+    </div>`).join('');
+
+  // Equity curve
+  const sorted=[...trades].sort((a,b)=>a.date.localeCompare(b.date));
+  const cumPnl=sorted.reduce((acc,t,i)=>{acc.push((acc[i-1]||0)+parseFloat(t.pnl||0));return acc;},[]);
+  const svgEl=document.getElementById('equity-svg');
+  if(cumPnl.length>1){
+    const max=Math.max(...cumPnl,1),min=Math.min(...cumPnl,0),range=max-min||1;
+    const pts=cumPnl.map((v,i)=>{
+      const x=(i/(cumPnl.length-1))*480+10;
+      const y=85-((v-min)/range)*75+5;
+      return x+','+y;
+    }).join(' ');
+    const last=cumPnl[cumPnl.length-1];
+    const color=last>=0?'#0077B6':'#EF476F';
+    svgEl.innerHTML=`<defs>
+      <linearGradient id="eqG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </linearGradient></defs>
+      <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <polygon points="${pts} 490,90 10,90" fill="url(#eqG)"/>
+      <line x1="10" y1="90" x2="490" y2="90" stroke="#1a2f50" stroke-width="1"/>`;
+  } else {
+    svgEl.innerHTML=`<text x="250" y="55" text-anchor="middle" fill="#1a2f50" font-size="12" font-family="Space Grotesk">Log trades to build your equity curve</text>`;
+  }
+
+  // Tag breakdown
+  const tagEl=document.getElementById('tag-breakdown');
+  const tagRows=SETUP_TAGS.map(tag=>{
+    const st=trades.filter(t=>t.tag===tag);
+    if(!st.length) return '';
+    const ss=calcStats(st);
+    return `<div class="perf-bar-wrap">
+      <div class="perf-bar-label" style="font-size:10px;">${tag.replace(/_/g,' ')}</div>
+      <div class="perf-bar-track"><div class="perf-bar-fill" style="width:${ss.winRate}%;background:${ss.totalPnl>=0?'var(--blue)':'var(--red)'};"></div></div>
+      <div class="perf-bar-val" style="color:${pnlColor(ss.totalPnl)}">${fmtPnl(ss.totalPnl)}</div>
+    </div>`;
+  }).join('');
+  tagEl.innerHTML=tagRows||'<div style="color:var(--muted);font-size:12px;">Log trades to see setup breakdown</div>';
+
+  // Emotion breakdown
+  const emEl=document.getElementById('emotion-breakdown');
+  emEl.innerHTML=EMOTIONS.map(e=>{
+    const et=trades.filter(t=>t.emotion===e);
+    if(!et.length) return '';
+    const ss=calcStats(et);
+    return `<div style="background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;text-align:center;">
+      <div style="font-size:10px;color:var(--muted2);margin-bottom:4px;">${e}</div>
+      <div style="font-family:var(--mono);font-size:15px;font-weight:600;color:${pnlColor(ss.totalPnl)};">${fmtPnl(ss.totalPnl)}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">${et.length} trades · ${ss.winRate}% WR</div>
+    </div>`;
+  }).join('');
+  if(!emEl.innerHTML.trim()) emEl.innerHTML='<div style="color:var(--muted);font-size:12px;">Log trades to see emotional patterns</div>';
+
+  // Session breakdown
+  const sesEl=document.getElementById('session-breakdown');
+  sesEl.innerHTML=SESSIONS.map(s=>{
+    const st=trades.filter(t=>t.session===s);
+    if(!st.length) return '';
+    const ss=calcStats(st);
+    return `<div class="perf-bar-wrap">
+      <div class="perf-bar-label">${s}</div>
+      <div class="perf-bar-track"><div class="perf-bar-fill" style="width:${ss.winRate}%;background:${ss.totalPnl>=0?'var(--blue)':'var(--red)'};"></div></div>
+      <div class="perf-bar-val" style="color:${pnlColor(ss.totalPnl)}">${ss.winRate}%</div>
+    </div>`;
+  }).join('');
+  if(!sesEl.innerHTML.trim()) sesEl.innerHTML='<div style="color:var(--muted);font-size:12px;">Log trades to see session data</div>';
+
+  // Recent trades
+  const recEl=document.getElementById('recent-trades-dash');
+  const recent=[...trades].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  if(!recent.length){recEl.innerHTML='<div style="color:var(--muted);font-size:13px;padding:20px 0;">No trades yet. Log your first trade to begin tracking your edge.</div>';return;}
+  recEl.innerHTML=`<table style="width:100%;font-size:12px;border-collapse:collapse;">
+    <thead><tr style="border-bottom:1px solid var(--border);">
+      <th style="padding:8px 6px;text-align:left;font-size:9px;letter-spacing:0.14em;color:var(--muted2);">DATE</th>
+      <th style="padding:8px 6px;text-align:left;font-size:9px;letter-spacing:0.14em;color:var(--muted2);">SYMBOL</th>
+      <th style="padding:8px 6px;text-align:left;font-size:9px;letter-spacing:0.14em;color:var(--muted2);">DIR</th>
+      <th style="padding:8px 6px;text-align:left;font-size:9px;letter-spacing:0.14em;color:var(--muted2);">TAG</th>
+      <th style="padding:8px 6px;text-align:left;font-size:9px;letter-spacing:0.14em;color:var(--muted2);">P&L $</th>
+      <th style="padding:8px 6px;text-align:left;font-size:9px;letter-spacing:0.14em;color:var(--muted2);">R MULT</th>
+      <th style="padding:8px 6px;text-align:left;font-size:9px;letter-spacing:0.14em;color:var(--muted2);">GRADE</th>
+    </tr></thead>
+    <tbody>${recent.map(t=>`<tr style="border-bottom:1px solid rgba(255,255,255,0.03);">
+      <td style="padding:9px 6px;font-family:var(--mono);font-size:11px;color:var(--muted2);">${t.date}</td>
+      <td style="padding:9px 6px;font-weight:600;">${t.symbol}</td>
+      <td style="padding:9px 6px;"><span class="badge badge-${t.direction.toLowerCase()}">${t.direction}</span></td>
+      <td style="padding:9px 6px;"><span class="pill" style="font-size:9px;">${t.tag||''}</span></td>
+      <td style="padding:9px 6px;font-family:var(--mono);font-weight:600;color:${pnlColor(t.pnl)};">${fmtPnl(t.pnl)}</td>
+      <td style="padding:9px 6px;font-family:var(--mono);color:${pnlColor(t.r)};">${fmtR(t.r)}</td>
+      <td style="padding:9px 6px;">${gradeBadge(t.grade)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+// ════════════════════════════════════════════════
+//  TRADE LOG
+// ════════════════════════════════════════════════
+function populateTagFilter(){
+  const sel=document.getElementById('f-tag');
+  if(!sel) return;
+  sel.innerHTML='<option value="">All Setup Tags</option>'+SETUP_TAGS.map(t=>`<option>${t}</option>`).join('');
+}
+
+function renderLog(){
+  const sym=(document.getElementById('f-symbol').value||'').toLowerCase();
+  const dir=document.getElementById('f-dir').value;
+  const ses=document.getElementById('f-session').value;
+  const tag=document.getElementById('f-tag').value;
+  const result=document.getElementById('f-result').value;
+  let filtered=trades.filter(t=>
+    (!sym||t.symbol.toLowerCase().includes(sym))&&
+    (!dir||t.direction===dir)&&
+    (!ses||t.session===ses)&&
+    (!tag||t.tag===tag)&&
+    (!result||(result==='win'?parseFloat(t.pnl||0)>0:parseFloat(t.pnl||0)<=0))
+  );
+  // Sort
+  filtered.sort((a,b)=>{
+    let va=a[sortCol]||0, vb=b[sortCol]||0;
+    if(sortCol==='date'||sortCol==='time'||sortCol==='symbol') return sortDir*String(va).localeCompare(String(vb));
+    return sortDir*(parseFloat(va)-parseFloat(vb));
+  });
+  const tbody=document.getElementById('log-tbody');
+  const empty=document.getElementById('log-empty');
+  if(!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=filtered.map(t=>`
+    <tr>
+      <td class="mono" style="font-size:11px;color:var(--muted2);">${t.date}</td>
+      <td class="mono" style="font-size:11px;color:var(--muted);">${t.time||''}</td>
+      <td style="font-weight:700;">${t.symbol}</td>
+      <td><span class="badge badge-${t.direction.toLowerCase()}">${t.direction}</span></td>
+      <td><span class="pill" style="font-size:9px;">${t.tag||''}</span></td>
+      <td style="font-size:11px;color:var(--muted2);">${t.session}</td>
+      <td class="mono" style="font-weight:600;color:${pnlColor(t.pnl)};">${fmtPnl(t.pnl)}</td>
+      <td class="mono" style="color:${pnlColor(t.pnl_pct)};">${t.pnl_pct?parseFloat(t.pnl_pct).toFixed(2)+'%':''}</td>
+      <td class="mono" style="font-weight:600;color:${pnlColor(t.r)};">${fmtR(t.r)}</td>
+      <td style="font-size:11px;color:var(--muted2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.exit_reason||''}</td>
+      <td>${gradeBadge(t.grade)}</td>
+      <td style="font-size:11px;color:var(--muted);">${t.emotion||''}</td>
+      <td style="font-size:11px;color:var(--muted2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${t.lesson||''}">${t.lesson||''}</td>
+      <td><button class="btn btn-red" onclick="deleteTrade(${t.id})">✕</button></td>
+    </tr>`).join('');
+}
+
+function sortTable(col){
+  if(sortCol===col) sortDir*=-1;
+  else{sortCol=col;sortDir=-1;}
+  document.querySelectorAll('th').forEach(th=>{th.classList.remove('sort-asc','sort-desc');});
+  const headers=['date','time','symbol','dir','tag','session','pnl','pnl_pct','r','exit_reason','grade','emotion','lesson',''];
+  // find the th
+  const ths=document.querySelectorAll('#log-table th');
+  const colMap={date:0,time:1,symbol:2,pnl:6,pnl_pct:7,r:8};
+  if(colMap[col]!==undefined) ths[colMap[col]].classList.add(sortDir===1?'sort-asc':'sort-desc');
+  renderLog();
+}
+
+function clearFilters(){
+  ['f-symbol','f-dir','f-session','f-tag','f-result'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  renderLog();
+}
+
+// ════════════════════════════════════════════════
+//  WEEKLY REVIEW
+// ════════════════════════════════════════════════
+function renderReview(){
+  const now=new Date();
+  const day=now.getDay();
+  const mon=new Date(now); mon.setDate(now.getDate()-(day===0?6:day-1));
+  const sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  const fmt={day:'numeric',month:'long',year:'numeric'};
+  document.getElementById('review-date-label').textContent=
+    'Week of '+mon.toLocaleDateString('en-GB',fmt)+' to '+sun.toLocaleDateString('en-GB',fmt);
+
+  // Week's trades
+  const monStr=mon.toISOString().split('T')[0];
+  const sunStr=sun.toISOString().split('T')[0];
+  const weekTrades=trades.filter(t=>t.date>=monStr&&t.date<=sunStr);
+  const s=calcStats(weekTrades);
+
+  document.getElementById('review-stats').innerHTML=[
+    {l:'Trades',v:weekTrades.length,c:''},
+    {l:'Win Rate',v:s.winRate+'%',c:''},
+    {l:'Profit Factor',v:s.profitFactor,c:parseFloat(s.profitFactor)>=1?'pos':'neg'},
+    {l:'Total P&L',v:fmtPnl(s.totalPnl),c:s.totalPnl>=0?'pos':'neg'},
+  ].map(d=>`<div class="stat-card"><div class="stat-label">${d.l}</div><div class="stat-val ${d.c}">${d.v}</div></div>`).join('');
+
+  // Best / worst setups
+  const tagPnl={};
+  weekTrades.forEach(t=>{if(t.tag){tagPnl[t.tag]=(tagPnl[t.tag]||0)+parseFloat(t.pnl||0);}});
+  const tagArr=Object.entries(tagPnl).sort((a,b)=>b[1]-a[1]);
+
+  const bestEl=document.getElementById('best-setups');
+  const top3=tagArr.slice(0,3);
+  bestEl.innerHTML=top3.length?top3.map(([tag,pnl])=>`
+    <div class="perf-bar-wrap">
+      <div class="perf-bar-label" style="font-size:10px;">${tag.replace(/_/g,' ')}</div>
+      <div class="perf-bar-val" style="color:var(--blue);">${fmtPnl(pnl)}</div>
+    </div>`).join(''):'<div style="color:var(--muted);font-size:12px;">No data this week</div>';
+
+  const worstEl=document.getElementById('worst-setups');
+  const bot3=tagArr.slice(-3).reverse().filter(([,pnl])=>pnl<0);
+  worstEl.innerHTML=bot3.length?bot3.map(([tag,pnl])=>`
+    <div class="perf-bar-wrap">
+      <div class="perf-bar-label" style="font-size:10px;">${tag.replace(/_/g,' ')}</div>
+      <div class="perf-bar-val" style="color:var(--red);">${fmtPnl(pnl)}</div>
+    </div>`).join(''):'<div style="color:var(--muted);font-size:12px;">No losing setups this week 🎯</div>';
+
+  // Emotion patterns
+  const emEl=document.getElementById('emotion-patterns');
+  const emPnl={};
+  weekTrades.forEach(t=>{if(t.emotion){emPnl[t.emotion]=(emPnl[t.emotion]||[]);emPnl[t.emotion].push(parseFloat(t.pnl||0));}});
+  emEl.innerHTML=Object.entries(emPnl).map(([em,arr])=>{
+    const total=arr.reduce((a,b)=>a+b,0);
+    return `<div class="perf-bar-wrap">
+      <div class="perf-bar-label">${em}</div>
+      <div class="perf-bar-track"><div class="perf-bar-fill" style="width:${Math.min(Math.abs(total)/10,100)}%;background:${total>=0?'var(--blue)':'var(--red)'};"></div></div>
+      <div class="perf-bar-val" style="color:${pnlColor(total)}">${fmtPnl(total)}</div>
+    </div>`;
+  }).join('')||'<div style="color:var(--muted);font-size:12px;">No trades this week</div>';
+}
+
+// ════════════════════════════════════════════════
+//  PERFORMANCE
+// ════════════════════════════════════════════════
+function renderPerformance(){
+  const el=document.getElementById('perf-content');
+  const s=calcStats(trades);
+  let html='';
+
+  // Top-line metrics
+  html+=`<div class="g4 mb24">
+    ${[
+      ['Win Rate',s.winRate+'%'],['Profit Factor',s.profitFactor],
+      ['Avg Win',fmtPnl(s.avgWin)],['Avg Loss','-'+fmtPnl(s.avgLoss)],
+    ].map(([l,v])=>`<div class="stat-card"><div class="stat-label">${l}</div><div class="stat-val">${v}</div></div>`).join('')}
+  </div>`;
+
+  // Setup tag table
+  html+=`<div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Setup Tag Performance</div><div class="section-divider-line"></div></div>`;
+  html+=`<div class="tbl-wrap mb24"><table><thead><tr>
+    <th>Setup Tag</th><th>Trades</th><th>Wins</th><th>Losses</th><th>Win Rate</th><th>Profit Factor</th><th>Total P&L</th><th>Avg R</th>
+  </tr></thead><tbody>`;
+  const hasTag=SETUP_TAGS.some(tag=>trades.some(t=>t.tag===tag));
+  if(!hasTag){html+=`<tr><td colspan="8" style="padding:28px;text-align:center;color:var(--muted);">Log trades with Setup Tags to see breakdown</td></tr>`;}
+  else{
+    SETUP_TAGS.forEach(tag=>{
+      const st=trades.filter(t=>t.tag===tag);
+      if(!st.length) return;
+      const ss=calcStats(st);
+      html+=`<tr>
+        <td style="font-weight:600;font-size:11px;">${tag}</td>
+        <td class="mono">${st.length}</td>
+        <td class="mono" style="color:var(--blue);">${ss.wins.length}</td>
+        <td class="mono" style="color:var(--red);">${ss.losses.length}</td>
+        <td class="mono">${ss.winRate}%</td>
+        <td class="mono" style="color:${parseFloat(ss.profitFactor)>=1?'var(--blue)':'var(--red)'};">${ss.profitFactor}</td>
+        <td class="mono" style="font-weight:600;color:${pnlColor(ss.totalPnl)};">${fmtPnl(ss.totalPnl)}</td>
+        <td class="mono" style="color:${pnlColor(ss.avgR)};">${ss.avgR}R</td>
+      </tr>`;
+    });
+  }
+  html+=`</tbody></table></div>`;
+
+  // Session table
+  html+=`<div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Session Performance</div><div class="section-divider-line"></div></div>`;
+  html+=`<div class="tbl-wrap mb24"><table><thead><tr>
+    <th>Session</th><th>Trades</th><th>Win Rate</th><th>Profit Factor</th><th>Total P&L</th><th>Avg R</th>
+  </tr></thead><tbody>`;
+  SESSIONS.forEach(ses=>{
+    const st=trades.filter(t=>t.session===ses);
+    if(!st.length) return;
+    const ss=calcStats(st);
+    html+=`<tr>
+      <td style="font-weight:600;">${ses}</td>
+      <td class="mono">${st.length}</td>
+      <td class="mono">${ss.winRate}%</td>
+      <td class="mono" style="color:${parseFloat(ss.profitFactor)>=1?'var(--blue)':'var(--red)'};">${ss.profitFactor}</td>
+      <td class="mono" style="font-weight:600;color:${pnlColor(ss.totalPnl)};">${fmtPnl(ss.totalPnl)}</td>
+      <td class="mono" style="color:${pnlColor(ss.avgR)};">${ss.avgR}R</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div>`;
+
+  // Grade analysis
+  html+=`<div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Plan Grade Analysis</div><div class="section-divider-line"></div></div>`;
+  html+=`<div class="tbl-wrap mb24"><table><thead><tr>
+    <th>Plan Grade</th><th>Trades</th><th>Win Rate</th><th>Total P&L</th><th>Avg R</th><th>Insight</th>
+  </tr></thead><tbody>`;
+  ['A+','A','B','C','D','F'].forEach(g=>{
+    const st=trades.filter(t=>t.grade===g);
+    if(!st.length) return;
+    const ss=calcStats(st);
+    const insight=parseFloat(ss.winRate)>60?'🟢 High execution quality':'⚠️ Review process';
+    html+=`<tr>
+      <td>${gradeBadge(g)}</td>
+      <td class="mono">${st.length}</td>
+      <td class="mono">${ss.winRate}%</td>
+      <td class="mono" style="color:${pnlColor(ss.totalPnl)};">${fmtPnl(ss.totalPnl)}</td>
+      <td class="mono" style="color:${pnlColor(ss.avgR)};">${ss.avgR}R</td>
+      <td style="font-size:11px;color:var(--muted2);">${insight}</td>
+    </tr>`;
+  });
+  if(!trades.some(t=>t.grade)) html+=`<tr><td colspan="6" style="padding:28px;text-align:center;color:var(--muted);">Grade your trades to see process analysis</td></tr>`;
+  html+=`</tbody></table></div>`;
+
+  el.innerHTML=html;
+}
+
+// ════════════════════════════════════════════════
+//  PLAYBOOK
+// ════════════════════════════════════════════════
+function renderPlaybook(){
+  document.getElementById('playbook-grid').innerHTML=PLAYBOOK_DATA.map(p=>`
+    <div style="background:var(--card);border:1px solid var(--border);border-top:3px solid var(--blue);border-radius:8px;padding:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="font-family:var(--head);font-size:15px;font-weight:700;">${p.emoji} ${p.name}</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="badge badge-grade-ab">${p.grade}</span>
+          <span style="font-family:var(--mono);font-size:13px;color:var(--blue);font-weight:600;">${p.winRate}</span>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:0.1em;">${p.session}</div>
+      <div style="font-size:12px;color:var(--muted2);line-height:1.6;margin-bottom:14px;">${p.desc}</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;color:var(--muted2);margin-bottom:8px;">RULES</div>
+        ${p.rules.map((r,i)=>`<div style="display:flex;gap:8px;margin-bottom:5px;font-size:12px;color:var(--muted2);">
+          <span style="color:var(--blue);font-weight:700;flex-shrink:0;">${i+1}.</span>${r}
+        </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">${p.pairs.map(p=>`<span class="pill">${p}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+//  CSV EXPORT / IMPORT
+// ════════════════════════════════════════════════
+function exportCSV(){
+  if(!trades.length){showToast('No trades to export','error');return;}
+  const cols=['id','date','time','symbol','direction','session','tag','entry_plan','entry_actual','stop','target','exit_plan','exit_actual','size','risk_dollar','risk_pct','pnl','pnl_pct','r','exit_reason','grade','emotion','lesson','notes'];
+  const rows=[cols.join(','),...trades.map(t=>cols.map(c=>JSON.stringify(t[c]||'')).join(','))];
+  const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='lti_trades_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  showToast('Exported '+trades.length+' trades','success');
+}
+
+function importCSV(input){
+  if(!input.files||!input.files[0]) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const lines=e.target.result.split('\n');
+      const headers=lines[0].split(',').map(h=>h.replace(/"/g,''));
+      let imported=0;
+      for(let i=1;i<lines.length;i++){
+        if(!lines[i].trim()) continue;
+        const vals=lines[i].match(/(".*?"|[^,]+)(?=,|$)/g)||[];
+        const obj={};
+        headers.forEach((h,j)=>obj[h]=(vals[j]||'').replace(/"/g,''));
+        if(!obj.symbol) continue;
+        obj.id=obj.id||Date.now()+i;
+        obj.pnl=parseFloat(obj.pnl)||0;
+        obj.r=parseFloat(obj.r)||0;
+        trades.push(obj);
+        imported++;
+      }
+      // Batch save imported trades to Firestore
+      const newTrades = trades.slice(0, imported);
+      newTrades.forEach(t => firestoreSaveTrade(t));
+      showToast('Imported '+imported+' trades','success');
+      renderLog();
+    }catch(err){showToast('Import failed check CSV format','error');}
+  };
+  reader.readAsText(input.files[0]);
+}
+
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
+document.getElementById('nt-date').value=new Date().toISOString().split('T')[0];
+</script>
+
+<script>
+// ─── EMBED LOGO AS BASE64 ───
+(function(){
+  const b64='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';
+  const src='data:image/webp;base64,'+b64;
+  document.getElementById('splash-logo').src=src;
+  document.getElementById('nav-logo-wrap').innerHTML=`<img src="${src}" alt="LTI" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+})();
+</script>
+
+<script type="module">
+// ════════════════════════════════════════════════════════
+//  FIREBASE — replace the config values with yours from
+//  console.firebase.google.com → Project Settings → Apps
+// ════════════════════════════════════════════════════════
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  setDoc,
+  deleteDoc,
+  getDocs,
+  query,
+  orderBy,
+  serverTimestamp,
+  where
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+// ── YOUR CONFIG (paste from Firebase Console) ──────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyCXl-TeQ5u27-yTOZRvmOaLUGIDn_UHXm8",
+  authDomain:        "lti-journal.firebaseapp.com",
+  projectId:         "lti-journal",
+  storageBucket:     "lti-journal.firebasestorage.app",
+  messagingSenderId: "624627074103",
+  appId:             "1:624627074103:web:4aa80fd36c1ba36c1febb2"
+};
+// ───────────────────────────────────────────────────────
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+// ─── expose to global scope so inline onclick handlers work ───
+window._db   = db;
+window._auth = auth;
+
+// ════════════════════════════════════════════════════════
+//  AUTH STATE LISTENER — drives everything
+// ════════════════════════════════════════════════════════
+onAuthStateChanged(auth, async (user) => {
+  const btn = document.getElementById('splash-enter-btn');
+  if (user) {
+    // Logged in — load trades then enter
+    await loadTradesFromFirestore(user.uid);
+    btn.textContent = 'Enter Journal';
+    btn.style.opacity = '1';
+    btn.style.cursor  = 'pointer';
+    btn.disabled = false;
+    btn.onclick = () => enterAppAuthed();
+    updateNavUser(user);
+    document.getElementById('nav-signout-btn').style.display = 'block';
+    document.getElementById('nav-user-info').style.display   = 'flex';
+    // If modal is open, close it and enter
+    if (document.getElementById('auth-modal').style.display !== 'none') {
+      hideAuthModal();
+      enterAppAuthed();
+    }
+  } else {
+    // Not logged in
+    btn.textContent = 'Sign In to Continue';
+    btn.style.opacity = '1';
+    btn.style.cursor  = 'pointer';
+    btn.disabled = false;
+    btn.onclick = () => showAuthModal();
+    document.getElementById('nav-signout-btn').style.display = 'none';
+    document.getElementById('nav-user-info').style.display   = 'none';
+  }
+});
+
+// ════════════════════════════════════════════════════════
+//  FIRESTORE — TRADE CRUD
+// ════════════════════════════════════════════════════════
+async function loadTradesFromFirestore(uid) {
+  try {
+    const q = query(
+      collection(db, 'users', uid, 'trades'),
+      orderBy('date', 'desc')
+    );
+    const snap = await getDocs(q);
+    trades = snap.docs.map(d => ({ ...d.data(), _docId: d.id }));
+  } catch(e) {
+    console.warn('Firestore load error:', e);
+    trades = [];
+  }
+}
+
+window.firestoreSaveTrade = async function(trade) {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    const tradeData = { ...trade, updatedAt: serverTimestamp() };
+    delete tradeData._docId;
+    if (trade._docId) {
+      // Update existing
+      await setDoc(doc(db, 'users', user.uid, 'trades', trade._docId), tradeData);
+    } else {
+      // New trade — use trade.id as doc ID for deduplication
+      const docRef = doc(db, 'users', user.uid, 'trades', String(trade.id));
+      await setDoc(docRef, tradeData);
+      // Update local ref
+      const idx = trades.findIndex(t => t.id === trade.id);
+      if (idx >= 0) trades[idx]._docId = String(trade.id);
+    }
+  } catch(e) {
+    console.error('Firestore save error:', e);
+    showToast('Cloud save failed — check connection', 'error');
+  }
+};
+
+window.firestoreDeleteTrade = async function(id) {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    await deleteDoc(doc(db, 'users', user.uid, 'trades', String(id)));
+  } catch(e) {
+    console.error('Firestore delete error:', e);
+  }
+};
+
+// ════════════════════════════════════════════════════════
+//  AUTH MODAL CONTROLS
+// ════════════════════════════════════════════════════════
+window.showAuthModal = function() {
+  const m = document.getElementById('auth-modal');
+  m.style.display = 'flex';
+};
+window.hideAuthModal = function() {
+  document.getElementById('auth-modal').style.display = 'none';
+};
+
+let authMode = 'login';
+window.switchAuthTab = function(mode) {
+  authMode = mode;
+  const isSignup = mode === 'signup';
+  document.getElementById('auth-tab-login').style.background  = isSignup ? 'transparent' : 'var(--blue)';
+  document.getElementById('auth-tab-login').style.color       = isSignup ? 'var(--muted2)' : 'var(--white)';
+  document.getElementById('auth-tab-signup').style.background = isSignup ? 'var(--blue)' : 'transparent';
+  document.getElementById('auth-tab-signup').style.color      = isSignup ? 'var(--white)' : 'var(--muted2)';
+  document.getElementById('auth-signup-extras').style.display = isSignup ? 'grid' : 'none';
+  document.getElementById('auth-forgot-wrap').style.display   = isSignup ? 'none' : 'block';
+  document.getElementById('auth-submit-btn').textContent      = isSignup ? 'CREATE ACCOUNT' : 'LOG IN';
+  clearAuthMessages();
+};
+
+function clearAuthMessages() {
+  document.getElementById('auth-error').style.display   = 'none';
+  document.getElementById('auth-success').style.display = 'none';
+}
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('auth-success').style.display = 'none';
+}
+function showAuthSuccess(msg) {
+  const el = document.getElementById('auth-success');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+function friendlyAuthError(code) {
+  const map = {
+    'auth/email-already-in-use':   'That email is already registered. Try logging in instead.',
+    'auth/wrong-password':          'Incorrect password. Try again or reset your password.',
+    'auth/user-not-found':          'No account found with that email.',
+    'auth/invalid-email':           'Please enter a valid email address.',
+    'auth/weak-password':           'Password must be at least 8 characters.',
+    'auth/too-many-requests':       'Too many attempts. Please wait a moment and try again.',
+    'auth/network-request-failed':  'Network error — check your connection.',
+    'auth/popup-closed-by-user':    'Sign-in popup was closed. Please try again.',
+  };
+  return map[code] || 'Something went wrong. Please try again.';
+}
+
+window.handleAuthSubmit = async function() {
+  const email    = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const btn      = document.getElementById('auth-submit-btn');
+  clearAuthMessages();
+
+  if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  if (password.length < 8) { showAuthError('Password must be at least 8 characters.'); return; }
+
+  if (authMode === 'signup') {
+    const termsChecked = document.getElementById('auth-terms').checked;
+    if (!termsChecked) { showAuthError('Please accept the Terms of Service to continue.'); return; }
+  }
+
+  btn.textContent = 'Please wait…'; btn.disabled = true;
+
+  try {
+    if (authMode === 'login') {
+      await signInWithEmailAndPassword(auth, email, password);
+    } else {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      const displayName = document.getElementById('auth-name').value.trim();
+      if (displayName) await updateProfile(cred.user, { displayName });
+      // Save subscriber record
+      const wantsNewsletter = document.getElementById('auth-newsletter').checked;
+      await setDoc(doc(db, 'subscribers', cred.user.uid), {
+        uid: cred.user.uid,
+        email,
+        displayName: displayName || '',
+        newsletterOptIn: wantsNewsletter,
+        signupDate: serverTimestamp(),
+        consentVersion: '1.0',
+        gdprConsent: true
+      });
+      showAuthSuccess('Account created! Loading your journal…');
+    }
+    // onAuthStateChanged will handle UI update + enter
+  } catch(e) {
+    showAuthError(friendlyAuthError(e.code));
+    btn.textContent = authMode === 'login' ? 'LOG IN' : 'CREATE ACCOUNT';
+    btn.disabled = false;
+  }
+};
+
+window.handleGoogleSignIn = async function() {
+  clearAuthMessages();
+  try {
+    await signInWithPopup(auth, googleProvider);
+    // onAuthStateChanged handles the rest
+  } catch(e) {
+    showAuthError(friendlyAuthError(e.code));
+  }
+};
+
+window.sendPasswordReset = async function() {
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { showAuthError('Enter your email address above first.'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showAuthSuccess('Password reset email sent. Check your inbox.');
+  } catch(e) {
+    showAuthError(friendlyAuthError(e.code));
+  }
+};
+
+window.handleSignOut = async function() {
+  if (!confirm('Sign out of LTI Journal?')) return;
+  await signOut(auth);
+  trades = [];
+  location.reload();
+};
+
+function updateNavUser(user) {
+  const email   = user.email || '';
+  const initial = (user.displayName || email).charAt(0).toUpperCase();
+  document.getElementById('nav-user-avatar').textContent = initial;
+  document.getElementById('nav-user-email').textContent  = user.displayName || email;
+}
+
+function enterAppAuthed() {
+  document.getElementById('splash').style.animation = 'splashOut 0.4s ease forwards';
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('app').style.display    = 'block';
+    renderDashboard();
+  }, 400);
+}
+
+// ════════════════════════════════════════════════════════
+//  IMPORT TAB — BROKER CSV PARSER
+// ════════════════════════════════════════════════════════
+const BROKER_FORMATS = [
+  {
+    id: 'mt4', name: 'MetaTrader 4', emoji: '🖥️',
+    desc: 'History Center export — Reports → Account History',
+    badge: 'auto',
+    cols: { symbol:'Symbol', direction:'Type', pnl:'Profit', date:'Open Time', entry:'Open Price', exit:'Close Price', size:'Volume', notes:'Comment' },
+    dirMap: { 'buy':'LONG','sell':'SHORT','buy limit':'LONG','sell limit':'SHORT' }
+  },
+  {
+    id: 'mt5', name: 'MetaTrader 5', emoji: '🖥️',
+    desc: 'History → Save As Report → Detailed',
+    badge: 'auto',
+    cols: { symbol:'Symbol', direction:'Type', pnl:'Profit', date:'Time', entry:'Price', exit:'Price (1)', size:'Volume', notes:'Comment' },
+    dirMap: { 'buy':'LONG','sell':'SHORT' }
+  },
+  {
+    id: 'ibkr', name: 'IBKR / TWS', emoji: '🏛️',
+    desc: 'Flex Query → Trades → CSV',
+    badge: 'auto',
+    cols: { symbol:'Symbol', direction:'Buy/Sell', pnl:'Realized P/L', date:'DateTime', entry:'TradePrice', size:'Quantity', notes:'Notes' },
+    dirMap: { 'BUY':'LONG','SELL':'SHORT','B':'LONG','S':'SHORT' }
+  },
+  {
+    id: 'ctrader', name: 'cTrader', emoji: '📊',
+    desc: 'History → Export → CSV',
+    badge: 'auto',
+    cols: { symbol:'Symbol', direction:'Trade Side', pnl:'Net Profit', date:'Open Time', entry:'Entry Price', exit:'Closing Price', size:'Volume (lots)', notes:'Label' },
+    dirMap: { 'buy':'LONG','sell':'SHORT','Buy':'LONG','Sell':'SHORT' }
+  },
+  {
+    id: 'tradovate', name: 'Tradovate', emoji: '⚡',
+    desc: 'P&L History → Export CSV',
+    badge: 'auto',
+    cols: { symbol:'contract', direction:'side', pnl:'totalPnl', date:'openDateTime', entry:'avgOpenPrice', exit:'avgClosePrice', size:'totalQty', notes:'notes' },
+    dirMap: { 'BUY':'LONG','SELL':'SHORT','Buy':'LONG','Sell':'SHORT' }
+  },
+  {
+    id: 'tastytrade', name: 'Tastytrade', emoji: '🌮',
+    desc: 'Transactions → Filter Trades → Download CSV',
+    badge: 'auto',
+    cols: { symbol:'Underlying Symbol', direction:'Action', pnl:'Net Premium', date:'Date', size:'Quantity', notes:'Description' },
+    dirMap: { 'BUY_TO_OPEN':'LONG','SELL_TO_OPEN':'SHORT','Buy to Open':'LONG','Sell to Open':'SHORT' }
+  },
+  {
+    id: 'custom', name: 'Custom CSV', emoji: '🔧',
+    desc: 'Map your own column headers manually',
+    badge: 'manual',
+    cols: {}
+  }
+];
+
+const JOURNAL_FIELDS = ['symbol','direction','pnl','date','entry','exit','size','notes'];
+let selectedBroker = null;
+let parsedPreview  = [];
+
+window.renderImportTab = function() {
+  renderBrokerCards();
+  renderBrokerGuide();
+};
+
+function renderBrokerCards() {
+  const el = document.getElementById('broker-cards');
+  if (!el) return;
+  el.innerHTML = BROKER_FORMATS.map(b => `
+    <div class="broker-card ${selectedBroker === b.id ? 'selected' : ''}" onclick="selectBroker('${b.id}')">
+      <div class="broker-card-logo">${b.emoji}</div>
+      <div class="broker-card-name">${b.name}</div>
+      <div class="broker-card-desc">${b.desc}</div>
+      <span class="broker-card-badge ${b.badge}">${b.badge === 'auto' ? '✓ Auto-map' : 'Manual map'}</span>
+    </div>
+  `).join('');
+}
+
+window.selectBroker = function(id) {
+  selectedBroker = id;
+  renderBrokerCards();
+  const customWrap = document.getElementById('custom-mapping-wrap');
+  if (id === 'custom') {
+    customWrap.style.display = 'block';
+    renderCustomMapFields();
+  } else {
+    customWrap.style.display = 'none';
+  }
+  if (parsedPreview.length) renderPreview();
+};
+
+function renderCustomMapFields() {
+  const el = document.getElementById('custom-map-fields');
+  el.innerHTML = JOURNAL_FIELDS.map(f => `
+    <div class="field">
+      <label class="lbl">${f.toUpperCase()}</label>
+      <input class="inp" type="text" id="custom-col-${f}" placeholder="Your CSV column header">
+    </div>
+  `).join('');
+}
+
+window.handleDrop = function(e) {
+  e.preventDefault();
+  const dz = document.getElementById('drop-zone');
+  dz.style.borderColor = 'var(--border2)'; dz.style.background = '';
+  const file = e.dataTransfer.files[0];
+  if (file) processCSVFile(file);
+};
+
+window.handleFileSelect = function(input) {
+  if (input.files && input.files[0]) processCSVFile(input.files[0]);
+};
+
+function processCSVFile(file) {
+  if (!file.name.match(/\.(csv|txt)$/i)) {
+    showToast('Please upload a .csv file', 'error'); return;
+  }
+  document.getElementById('file-info').style.display = 'block';
+  document.getElementById('drop-zone').style.display = 'none';
+  document.getElementById('file-name-display').textContent = file.name;
+  document.getElementById('file-size-display').textContent = (file.size / 1024).toFixed(1) + ' KB · ' + new Date().toLocaleTimeString();
+  const reader = new FileReader();
+  reader.onload = e => { parseCSV(e.target.result); };
+  reader.readAsText(file);
+}
+
+window.clearImport = function() {
+  document.getElementById('file-info').style.display = 'none';
+  document.getElementById('drop-zone').style.display = 'block';
+  document.getElementById('csv-upload-input').value = '';
+  parsedPreview = [];
+  document.getElementById('preview-area').innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">Upload a CSV file to preview mapped trades.</div>';
+  document.getElementById('import-summary').innerHTML = 'No file loaded yet.';
+  document.getElementById('do-import-btn').disabled = true;
+  document.getElementById('do-import-btn').style.opacity = '0.4';
+};
+
+function parseCSV(text) {
+  if (!selectedBroker) {
+    showToast('Please select your broker format first', 'error'); return;
+  }
+  const lines   = text.trim().split(/\r?\n/);
+  const headers = parseCSVLine(lines[0]);
+  const broker  = BROKER_FORMATS.find(b => b.id === selectedBroker);
+  const colMap  = broker.id === 'custom' ? getCustomColMap() : broker.cols;
+
+  parsedPreview = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const vals = parseCSVLine(lines[i]);
+    const row  = {};
+    headers.forEach((h, j) => row[h] = (vals[j] || '').trim());
+    const mapped = mapRow(row, colMap, broker.dirMap || {});
+    if (mapped) parsedPreview.push(mapped);
+  }
+  renderPreview();
+  updateImportSummary();
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '', inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuotes = !inQuotes; continue; }
+    if (ch === ',' && !inQuotes) { result.push(cur.trim()); cur = ''; continue; }
+    cur += ch;
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function mapRow(row, colMap, dirMap) {
+  const sym = row[colMap.symbol] || row['Symbol'] || row['symbol'] || '';
+  if (!sym) return null;
+  const rawDir = (row[colMap.direction] || '').toLowerCase();
+  const dir    = dirMap[row[colMap.direction]] || dirMap[rawDir] || (rawDir.includes('buy') ? 'LONG' : rawDir.includes('sell') ? 'SHORT' : '');
+  const pnl    = parseFloat((row[colMap.pnl] || '0').replace(/[^0-9.\-]/g, '')) || 0;
+  const dateRaw = row[colMap.date] || '';
+  const date   = parseDate(dateRaw);
+  return {
+    id: Date.now() + Math.random(),
+    symbol: sym.toUpperCase(),
+    direction: dir || 'LONG',
+    pnl,
+    date,
+    pnl_pct: '',
+    entry: row[colMap.entry] || '',
+    exit:  row[colMap.exit]  || '',
+    size:  row[colMap.size]  || '',
+    notes: row[colMap.notes] || '',
+    session: '',
+    tag: '',
+    r: 0,
+    grade: '',
+    emotion: '',
+    confidence: 5,
+    emotional_state: 5,
+    _imported: true,
+    _broker: selectedBroker
+  };
+}
+
+function getCustomColMap() {
+  const map = {};
+  JOURNAL_FIELDS.forEach(f => {
+    const val = document.getElementById('custom-col-' + f);
+    if (val && val.value.trim()) map[f] = val.value.trim();
+  });
+  return map;
+}
+
+function parseDate(raw) {
+  if (!raw) return new Date().toISOString().split('T')[0];
+  const d = new Date(raw);
+  if (!isNaN(d)) return d.toISOString().split('T')[0];
+  // Try DD.MM.YYYY (MT4 format)
+  const m = raw.match(/(\d{2})[\.\-\/](\d{2})[\.\-\/](\d{4})/);
+  if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+  return raw.split(' ')[0] || new Date().toISOString().split('T')[0];
+}
+
+function renderPreview() {
+  const el = document.getElementById('preview-area');
+  if (!parsedPreview.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">No valid trades found. Check your column mapping or broker selection.</div>';
+    return;
+  }
+  const sample = parsedPreview.slice(0, 20);
+  el.innerHTML = `
+    <div style="font-size:11px;color:var(--muted2);margin-bottom:10px;">Showing first ${sample.length} of ${parsedPreview.length} trades — validate before importing.</div>
+    <div class="preview-tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Date</th><th>Symbol</th><th>Direction</th><th>P&L</th><th>Entry</th><th>Exit</th><th>Size</th><th>Notes</th>
+        </tr></thead>
+        <tbody>
+          ${sample.map(t => `
+            <tr class="${parseFloat(t.pnl) >= 0 ? 'preview-valid-row' : 'preview-warn-row'}">
+              <td class="mono">${t.date}</td>
+              <td><strong>${t.symbol}</strong></td>
+              <td><span class="badge ${t.direction==='LONG'?'badge-long':'badge-short'}">${t.direction}</span></td>
+              <td class="mono" style="color:${parseFloat(t.pnl)>=0?'var(--blue)':'var(--red)'}">${parseFloat(t.pnl)>=0?'+':''}${parseFloat(t.pnl).toFixed(2)}</td>
+              <td class="mono">${t.entry||'—'}</td>
+              <td class="mono">${t.exit||'—'}</td>
+              <td>${t.size||'—'}</td>
+              <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted2)">${t.notes||'—'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function updateImportSummary() {
+  const btn = document.getElementById('do-import-btn');
+  if (!parsedPreview.length) {
+    document.getElementById('import-summary').innerHTML = 'No valid trades parsed.';
+    btn.disabled = true; btn.style.opacity = '0.4'; return;
+  }
+  const wins   = parsedPreview.filter(t => parseFloat(t.pnl) > 0).length;
+  const losses = parsedPreview.filter(t => parseFloat(t.pnl) <= 0).length;
+  const total  = parsedPreview.reduce((a,t) => a + parseFloat(t.pnl||0), 0);
+  const wr     = ((wins / parsedPreview.length) * 100).toFixed(0);
+  document.getElementById('import-summary').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <div class="imp-stat"><div class="imp-stat-val pos">${parsedPreview.length}</div><div class="imp-stat-lbl">Trades Found</div></div>
+      <div class="imp-stat"><div class="imp-stat-val pos">${wr}%</div><div class="imp-stat-lbl">Win Rate</div></div>
+      <div class="imp-stat"><div class="imp-stat-val ${total>=0?'pos':'neg'}">${total>=0?'+':''}$${Math.abs(total).toFixed(2)}</div><div class="imp-stat-lbl">Total P&L</div></div>
+      <div class="imp-stat"><div class="imp-stat-val">${wins}W / ${losses}L</div><div class="imp-stat-lbl">Record</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted2);">Broker: <strong style="color:var(--white)">${BROKER_FORMATS.find(b=>b.id===selectedBroker)?.name||'Custom'}</strong></div>
+  `;
+  btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+}
+
+window.executeImport = async function() {
+  if (!parsedPreview.length) return;
+  const dupMode = document.getElementById('dup-mode').value;
+  const defSession = document.getElementById('imp-default-session').value;
+  const defTag     = document.getElementById('imp-default-tag').value;
+  const btn = document.getElementById('do-import-btn');
+  btn.textContent = 'Importing…'; btn.disabled = true;
+  let imported = 0, skipped = 0;
+  for (const t of parsedPreview) {
+    t.session = t.session || defSession;
+    t.tag     = t.tag     || defTag;
+    if (dupMode === 'skip') {
+      const exists = trades.some(ex => ex.symbol === t.symbol && ex.date === t.date && Math.abs(parseFloat(ex.pnl||0) - parseFloat(t.pnl||0)) < 0.01);
+      if (exists) { skipped++; continue; }
+    }
+    trades.unshift(t);
+    await firestoreSaveTrade(t);
+    imported++;
+  }
+  showToast(`Imported ${imported} trades${skipped ? ' · ' + skipped + ' duplicates skipped' : ''}`, 'success');
+  btn.textContent = '💾 Import Trades to Journal';
+  btn.disabled = false;
+  clearImport();
+  renderLog();
+};
+
+window.exportFilteredCSV = function() {
+  // Re-uses the existing exportCSV with current filtered trades
+  exportCSV();
+};
+
+function renderBrokerGuide() {
+  const el = document.getElementById('broker-guide');
+  if (!el) return;
+  const guides = [
+    { name:'MT4 / MT5', emoji:'🖥️', steps:['Open MT4/MT5 platform','Click View → Terminal (Ctrl+T)','Go to Account History tab','Right-click → Save as Report','Choose Detailed → Save as CSV'] },
+    { name:'Interactive Brokers', emoji:'🏛️', steps:['Log in to Client Portal','Go to Reports → Flex Queries','Create a Trade Confirmation query','Select CSV format','Download and upload here'] },
+    { name:'cTrader', emoji:'📊', steps:['Open cTrader platform','Click History tab (bottom panel)','Set date range you need','Click Export button (top right)','Select CSV → Download'] },
+    { name:'Tradovate', emoji:'⚡', steps:['Log in to Tradovate.com','Go to P&L History','Select date range','Click Export → CSV','Upload the downloaded file'] },
+  ];
+  el.innerHTML = guides.map(g => `
+    <div class="guide-card">
+      <div class="guide-card-title">${g.emoji} ${g.name}</div>
+      ${g.steps.map((s,i) => `<div class="guide-step"><div class="guide-step-num">${i+1}</div><div>${s}</div></div>`).join('')}
+    </div>
+  `).join('');
+}
+
+// ── close modal on backdrop click ──
+document.getElementById('auth-modal').addEventListener('click', function(e) {
+  if (e.target === this) hideAuthModal();
+});
+
+// ── keyboard enter on auth fields ──
+['auth-email','auth-password'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleAuthSubmit();
+  });
+});
+</script>
+
+</body>
+</html>
